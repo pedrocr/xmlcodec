@@ -1,0 +1,81 @@
+This is a library that helps create Ruby importers/exporters of XML. The core
+of it is XMLCodec::XMLElement. To create an importer exporter for this XML
+format:
+
+  <root>
+    <firstelement>
+      <secondelement firstattr='1'>
+        some value
+      </secondelement>
+      <secondelement firstattr='2'>
+        some other value
+      </secondelement>
+    </firstelement>
+  </root>
+  
+you'd create the following classes
+
+  require 'xmlcodec'
+
+  class Root < XMLCodec::XMLElement
+    elname 'root'
+    xmlsubel :firstelement
+  end
+  
+  class FirstElement < XMLCodec::XMLElement
+    elname 'firstelement'
+    xmlsubel_mult :secondelement
+  end
+  
+  class SecondElement < XMLCodec::XMLElement
+    elname 'secondelement'
+    elwithvalue
+    xmlattr :firstattr
+  end
+  
+elname defines the name of the element in the XML DOM. xmlsubel defines a
+subelement that may exist only once. xmlsubel_mult defines a subelement that may
+appear several times. xmlattr defines an attribute for the element. The classes 
+will respond to accessor methods with the names of the subelements and 
+attributes.
+
+There is one more way to declare subelements:
+
+  class SomeOtherElement
+    elname 'stuff'
+    xmlsubelements
+  end
+
+This one defines an element that can have a bunch of elements of different types
+whose order is important. The class will have a #subelements method that gives 
+access to a container with the collection of the elements.
+
+This is all you have to define to implement the importer/exporter for the 
+format. 
+
+To import from a file just do:
+
+  Root.import_xml_text(File.new('somefilename.xml'))
+
+or from a REXML DOM:
+
+  Root.import_xml(REXML::Document.new(File.new('somefilename.xml')))
+  
+To export into a REXML DOM Document or Element do:
+
+  somerootelement.create_xml(REXML::Document.new)
+  
+or to some XML text:
+  
+  text = somerootelement.xml_text
+  
+All these calls require keeping the whole contents of the document in memory.
+The ones that use the REXML DOM will have it twice. To handle large documents
+with constant memory usage you should try importing with
+XMLCodec::XMLStreamObjectParser and exporting with 
+XMLCodec::XMLElement#partial_export.
+
+
+Author:
+  Pedro Côrte-Real
+  <pedrocr@gmail.com>
