@@ -1,5 +1,5 @@
 PKG_NAME = 'xmlcodec'
-PKG_VERSION = '0.0.2'
+PKG_VERSION = '0.0.3'
 
 require 'rake'
 require 'rake/testtask'
@@ -18,6 +18,9 @@ PKG_FILES = FileList[TEST_FILES,
                      'LICENSE',
                      'Rakefile']
 
+RDOC_OPTIONS = ['-S', '-w 2', '-N']
+RDOC_EXTRA_FILES = ['README']
+
 spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.summary = "Generic Importer/Exporter of XML formats"
@@ -29,6 +32,9 @@ spec = Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.autorequire = 'rake'
   s.files = PKG_FILES
+  s.has_rdoc = true
+  s.rdoc_options = RDOC_OPTIONS
+  s.extra_rdoc_files = RDOC_EXTRA_FILES
   s.description = <<EOF
 A library that eases the creation of XML importers and exporters for ruby.
 EOF
@@ -50,10 +56,10 @@ end
 Rake::RDocTask.new do |rd|
   rd.main = "README"
   rd.name = :docs
-  rd.rdoc_files.include("README", "lib/**/*.rb")
+  rd.rdoc_files.include(RDOC_EXTRA_FILES, "lib/**/*.rb")
   rd.rdoc_dir = 'web/doc'
   rd.title = "#{PKG_NAME} API"
-  rd.options = ['-S', '-w 2', '-N']
+  rd.options = RDOC_OPTIONS
 end
 
 task :stats do
