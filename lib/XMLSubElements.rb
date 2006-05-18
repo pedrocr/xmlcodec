@@ -30,8 +30,13 @@ module XMLCodec
     def end_partial_export(file)
     end
     
-    def partial_export(file, except=nil)
-      file << __parent.indentation(1)+self.xml_text+"\n"
+    def start_partial_export(file)
+      file << self.xml_text
+    end
+    
+    def partial_export(file)
+      start_partial_export(file)
+      end_partial_export(file)
     end
   end
   
@@ -92,7 +97,7 @@ module XMLCodec
     
     # Iterate all the values in the collection
     def each
-      @elements.each {|e| yield e}
+      @elements.dup.each {|e| yield e}
     end
     
     # Delete a certain element from the collection

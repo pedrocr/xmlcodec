@@ -457,13 +457,13 @@ module XMLCodec
           self.__parent.start_partial_export(file)
         end
         
+        file << create_open_tag
         if self.hasvalue?
-          file << indentation+create_open_tag+XMLUtils::escape_xml(self.value)
-        else
-          file << indentation+create_open_tag+"\n"
-          each_subelement do |e|
-            e.partial_export(file)
-          end
+          file << XMLUtils::escape_xml(self.value)
+        end
+        
+        each_subelement do |e|
+          e.partial_export(file)
         end
       end
     end
@@ -477,12 +477,8 @@ module XMLCodec
           e.end_partial_export(file)
         end
         
-        if self.hasvalue?
-          file << create_close_tag+"\n"
-        else
-          file << indentation+create_close_tag+"\n"
-        end
-        
+        file << create_close_tag
+
         if self.__parent
           self.__parent.delete_element(self)
         end
