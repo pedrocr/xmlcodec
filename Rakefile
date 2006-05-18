@@ -52,7 +52,7 @@ Rake::RDocTask.new do |rd|
   rd.name = :docs
   rd.rdoc_files.include("README", "lib/**/*.rb")
   rd.rdoc_dir = 'doc'
-  rd.title = PKG_NAME+' API"'
+  rd.title = "#{PKG_NAME} API"
   rd.options = ['-S', '-w 2', '-N']
 end
 
