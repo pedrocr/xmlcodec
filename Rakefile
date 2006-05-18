@@ -56,7 +56,7 @@ end
 Rake::RDocTask.new do |rd|
   rd.main = "README"
   rd.name = :docs
-  rd.rdoc_files.include(RDOC_EXTRA_FILES, "lib/**/*.rb")
+  rd.rdoc_files.include(RDOC_EXTRA_FILES, CODE_FILES)
   rd.rdoc_dir = 'web/doc'
   rd.title = "#{PKG_NAME} API"
   rd.options = RDOC_OPTIONS
