@@ -255,7 +255,7 @@ module XMLCodec
       end
       
       if has_subelements?
-        @subelements.each{|e| arr << e}
+        self.subelements.each{|e| arr << e}
       end
       
       arr.each {|e| yield e}
