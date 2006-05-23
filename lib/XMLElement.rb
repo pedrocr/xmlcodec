@@ -80,9 +80,19 @@ module XMLCodec
       }
     end
     
-    # Iterates over all of the object's XML subelements
+    # Iterates over the object's XML subelements
     def each_subel
-      self.class.xmlsubels.each {|name| yield name}
+      if not self.instance_variables.index("@__subel_names")
+        @__subel_names = []
+        # Iterate all the superclasses that are still children of XMLElement
+        # and iterate each of the subelements
+        c = self.class
+        while c.ancestors.index(XMLCodec::XMLElement)
+          c.xmlsubels.each {|name| @__subel_names << name}
+          c = c.superclass
+        end
+      end
+      @__subel_names.each {|name| yield name}
     end
 
     # Iterate all the superclasses that are still children of XMLElement
@@ -116,13 +126,17 @@ module XMLCodec
   
     # Iterates over the object's XML atributes
     def each_attr
-      # Iterate all the superclasses that are still children of EADElement
-      # and iterate each of the attributes
-      c = self.class
-      while c.ancestors.index(XMLCodec::XMLElement)
-        c.xmlattrs.each {|name| yield name}
-        c = c.superclass
+      if not self.instance_variables.index("@__attr_names")
+        @__attr_names = []
+        # Iterate all the superclasses that are still children of EADElement
+        # and iterate each of the attributes
+        c = self.class
+        while c.ancestors.index(XMLCodec::XMLElement)
+          c.xmlattrs.each {|name| @__attr_names << name}
+          c = c.superclass
+        end
       end
+      @__attr_names.each {|name| yield name}
     end
 
     # Creates the XML for the atributes
