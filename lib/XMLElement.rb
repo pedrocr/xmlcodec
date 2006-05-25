@@ -84,14 +84,15 @@ module XMLCodec
     # Iterates over the object's XML subelements
     def self.each_subel
       if not self.instance_variables.index("@__subel_names")
-        @__subel_names = []
+        names = []
         # Iterate all the superclasses that are still children of XMLElement
         # and iterate each of the subelements
         c = self
         while c.ancestors.index(XMLCodec::XMLElement)
-          c.xmlsubels.each {|name| @__subel_names << name}
+          names += c.xmlsubels
           c = c.superclass
         end
+        @__subel_names = names
       end
       @__subel_names.each {|name| yield name}
     end
@@ -103,7 +104,7 @@ module XMLCodec
         names = []
         c = self
         while c.ancestors.index(XMLCodec::XMLElement)
-          c.xmlsubelmultiples.each {|name| names << name}
+          names += c.xmlsubelmultiples
           c = c.superclass
         end
         @__subel_mult_names = names
@@ -135,7 +136,7 @@ module XMLCodec
         # and iterate each of the attributes
         c = self
         while c.ancestors.index(XMLCodec::XMLElement)
-          c.xmlattrs.each {|name| names << name}
+          names += c.xmlattrs
           c = c.superclass
         end
         @__attr_names = names
