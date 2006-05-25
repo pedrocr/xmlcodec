@@ -98,15 +98,17 @@ module XMLCodec
 
     # Iterate all the superclasses that are still children of XMLElement
     # and check if any of them have the subelement mult defined
-    def subel_mult?(element)
-      c = self.class
-      while c.ancestors.index(XMLCodec::XMLElement)
-        if c.xmlsubelmultiples.index(element)
-          return true
+    def self.subel_mult?(element)
+      if not self.instance_variables.index("@__subel_mult_names")
+        names = []
+        c = self
+        while c.ancestors.index(XMLCodec::XMLElement)
+          c.xmlsubelmultiples.each {|name| names << name}
+          c = c.superclass
         end
-        c = c.superclass
+        @__subel_mult_names = names
       end
-      return false
+      return @__subel_mult_names.index(element)? true : false
     end
     
     # Iterate all the superclasses that are still children of XMLElement
@@ -263,7 +265,7 @@ module XMLCodec
     
       self.class.each_subel do |a|  
         if value = self.send(a)
-          if subel_mult? a
+          if self.class.subel_mult? a
             value.each {|e| arr << e}
           else
             arr << value
@@ -283,7 +285,7 @@ module XMLCodec
     def delete_element(element)
       self.class.each_subel do |a|  
         value = self.send(a)
-        if subel_mult? a
+        if self.class.subel_mult? a
           value.delete_element(element)
         else
           self.send(a.to_s+'=', nil) if value == element
@@ -422,7 +424,7 @@ module XMLCodec
     def add_subel(children)
       children.each do |c|
         if subel_name = get_subel(c.class)
-          if subel_mult? subel_name
+          if self.class.subel_mult? subel_name
             self.send(subel_name) <<  c
           else
             self.send(subel_name.to_s+'=', c)
