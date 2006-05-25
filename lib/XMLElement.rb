@@ -27,6 +27,7 @@ module XMLCodec
   # rough in certain places. Changes will surely be made.
   class XMLElement
     INDENT_STR = '  '
+    CACHE = {}
   
     attr_accessor :element_id, :parent_id, :__xml_text
     attr_accessor :__parent
@@ -81,12 +82,12 @@ module XMLCodec
     end
     
     # Iterates over the object's XML subelements
-    def each_subel
+    def self.each_subel
       if not self.instance_variables.index("@__subel_names")
         @__subel_names = []
         # Iterate all the superclasses that are still children of XMLElement
         # and iterate each of the subelements
-        c = self.class
+        c = self
         while c.ancestors.index(XMLCodec::XMLElement)
           c.xmlsubels.each {|name| @__subel_names << name}
           c = c.superclass
@@ -125,23 +126,25 @@ module XMLCodec
     end
   
     # Iterates over the object's XML atributes
-    def each_attr
+    def self.each_attr    
       if not self.instance_variables.index("@__attr_names")
-        @__attr_names = []
+        names = []
         # Iterate all the superclasses that are still children of EADElement
         # and iterate each of the attributes
-        c = self.class
+        c = self
         while c.ancestors.index(XMLCodec::XMLElement)
-          c.xmlattrs.each {|name| @__attr_names << name}
+          c.xmlattrs.each {|name| names << name}
           c = c.superclass
         end
+        @__attr_names = names
       end
+      
       @__attr_names.each {|name| yield name}
     end
 
     # Creates the XML for the atributes
     def create_xml_attr(parent)
-      each_attr do |a|
+      self.class.each_attr do |a|
         value = self.send(a)
         if value
           parent.add_attribute(a.to_s, value)
@@ -152,7 +155,7 @@ module XMLCodec
     # returns a string with the opening tag for the element
     def create_open_tag
       attrs = {}
-      each_attr do |a|
+      self.class.each_attr do |a|
         value = self.send(a)
         if value
           attrs[a.to_s] = value
@@ -217,7 +220,7 @@ module XMLCodec
   
     # Creates the XML subelements
     def create_xml_subel(parent)
-      each_subel do |a|
+      self.class.each_subel do |a|
         if value = self.send(a)
           value.create_xml(parent)
         end
@@ -258,7 +261,7 @@ module XMLCodec
     def each_subelement
       arr = []
     
-      each_subel do |a|  
+      self.class.each_subel do |a|  
         if value = self.send(a)
           if subel_mult? a
             value.each {|e| arr << e}
@@ -278,7 +281,7 @@ module XMLCodec
   public
     # Remove the given subelement from the element
     def delete_element(element)
-      each_subel do |a|  
+      self.class.each_subel do |a|  
         value = self.send(a)
         if subel_mult? a
           value.delete_element(element)
@@ -401,7 +404,7 @@ module XMLCodec
     
     # add the attributes passed as a hash to the element
     def add_attr(attrs)
-      each_attr do |a|
+      self.class.each_attr do |a|
         if value = attrs[a.to_s]
           self.send("#{a}=", value)
         end
