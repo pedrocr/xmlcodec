@@ -407,10 +407,8 @@ module XMLCodec
     
     # add the attributes passed as a hash to the element
     def add_attr(attrs)
-      self.class.each_attr do |a|
-        if value = attrs[a.to_s]
-          self.send("#{a}=", value)
-        end
+      attrs.each do |name, value|
+        self.send("#{name}=", value)
       end
     end
     
