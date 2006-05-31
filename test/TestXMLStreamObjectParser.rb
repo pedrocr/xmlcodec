@@ -7,19 +7,19 @@ include XMLCodec
 class MyStreamListener
   attr_reader :abc, :subels, :mult, :subel
   def el_abc(el)
-    @abc = el.get_object
+    @abc = el
   end
   
   def el_subels(el)
-    @subels = el.get_object
+    @subels = el
   end
   
   def el_mult(el)
-    @mult = el.get_object
+    @mult = el
   end
   
   def el_subel(el)
-    @subel = el.get_object
+    @subel = el
   end
 end
 
@@ -28,7 +28,7 @@ class MyConsumingStreamListener
 
   def el_abc(el)
     el.consume
-    @abc = el.get_object
+    @abc = el
   end
 end
 
@@ -46,7 +46,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     listener = MyStreamListener.new
     parser = XMLStreamObjectParser.new(listener)
     parser.parse(file)
-    el = listener.abc
+    el = listener.abc.get_object
     assert_equal el.value, value
   end
   
@@ -59,16 +59,12 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     parser = XMLStreamObjectParser.new(listener)
     parser.parse(file)
     
-    el = listener.abc
+    el = listener.abc.get_object
     assert_equal el.value, value
     
     subel = parser.top_element
     assert_equal el, subel.abc
     assert_equal attrvalue, subel.someattr
-  end
-  
-  def test_multiple_names
-    
   end
   
   def test_mult
@@ -79,7 +75,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     parser = XMLStreamObjectParser.new(listener)
     parser.parse(file)
     
-    el = listener.abc
+    el = listener.abc.get_object
     assert_equal el.value, value
     assert_equal el, parser.top_element.abc[0]
   end
@@ -92,7 +88,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     parser = XMLStreamObjectParser.new(listener)
     parser.parse(file)
     
-    el = listener.abc
+    el = listener.abc.get_object
     assert_equal el.value, value
     assert_equal el, parser.top_element.subelements[0]
   end
@@ -105,7 +101,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     parser = XMLStreamObjectParser.new(listener)
     parser.parse(file)
     
-    el = listener.abc
+    el = listener.abc.get_object
     assert_equal el.value, value
     assert_nil parser.top_element.abc
   end
@@ -119,7 +115,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     parser = XMLStreamObjectParser.new(listener)
     parser.parse(file)
     
-    el = listener.subels
+    el = listener.subels.get_object
     assert_equal 2, el.subelements.size
     [value1, value2].each_with_index do |value, index|
       assert_kind_of SimpleElementMultName, el.subelements[index]
@@ -136,7 +132,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     parser = XMLStreamObjectParser.new(listener)
     parser.parse(file)
     
-    el = listener.mult
+    el = listener.mult.get_object
     assert_equal 2, el.abc2.size
     [value1, value2].each_with_index do |value, index|
       assert_kind_of SimpleElementMultName, el.abc2[index]
@@ -152,9 +148,23 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     parser = XMLStreamObjectParser.new(listener)
     parser.parse(file)
     
-    el = listener.subel
+    el = listener.subel.get_object
     assert_not_nil el.abc2
     assert_kind_of SimpleElementMultName, el.abc2
     assert_equal value, el.abc2.value
+  end
+  
+  def test_depth
+    value = 'somevalue'
+    file = '<subel><abc>'+value+'</abc></subel>'
+    
+    listener = MyStreamListener.new
+    parser = XMLStreamObjectParser.new(listener)
+    parser.parse(file)
+    
+    el1 = listener.subel
+    el2 = listener.abc
+    
+    assert el1.depth < el2.depth
   end
 end

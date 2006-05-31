@@ -5,13 +5,13 @@ module XMLCodec
   # This class is used internally by the parser to store the information about
   # each of the elements that gets created.
   class XMLSOParserElement
-    attr_reader :elclass, :consumed, :id
+    attr_reader :elclass, :consumed, :id, :depth
     
     # Create a new instance with the element name, a hash of atributes, it's
     # import/export class, the parent element and it's id
     # The id is used to fill in element_id and parent_id in XMLElement so that
     # the parser's user can know what is the tree structure between objects.
-    def initialize(name, attrs, elclass, parent, id)
+    def initialize(name, attrs, elclass, parent, id, depth)
       @attrs = attrs
       @elclass = elclass
       @children = Hash.new([])
@@ -21,6 +21,7 @@ module XMLCodec
       @parent = parent
       @id = id
       @name = name
+      @depth = depth
     end
 
     # Add a child element to the object    
@@ -65,7 +66,7 @@ module XMLCodec
       @listener = listener
       @children = Hash.new([])
       @currel = 0
-      @elements = [XMLSOParserElement.new(nil, nil, nil, nil, nil)]
+      @elements = [XMLSOParserElement.new(nil, nil, nil, nil, nil, 0)]
       @id = 0
       @top_element = nil
     end
@@ -102,7 +103,8 @@ module XMLCodec
     
     def tag_start(name, attrs) #:nodoc:
       @elements << XMLSOParserElement.new(name, attrs, get_elclass(name), 
-                                          curr_element, next_id)
+                                          curr_element, next_id, 
+                                          curr_element.depth+1)
       @currel += 1
     end
 
