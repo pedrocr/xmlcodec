@@ -91,18 +91,14 @@ module XMLUtils
     
     def tag_end(name)
       @contents << "</"+name+">"
-      element(name)
+      if @listener.respond_to? 'el_'+name
+        @listener.send('el_'+name, @elements[-1])
+      end
       @elements.pop()
     end
     
     def content
       @contents.text_from(@elements[-1].elstart)
-    end
-    
-    def element(name)
-      if @listener
-        @listener.element(@elements[-1])
-      end
     end
     
     def consume
