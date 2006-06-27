@@ -142,4 +142,31 @@ class TestPartialExport < Test::Unit::TestCase
     compare_xpath(value1, filename, "/subels/abc[1]")
     compare_xpath(value2, filename, "/subels/abc[2]")
   end
+  
+  def test_recursive
+    filename = 'test_partial_export_recursive.xml'
+    file = File.open(filename, "w")
+    
+    value = 'somevalue'
+  
+    rec1 = Recursive.new
+    rec1.start_partial_export(file)
+    
+    rec2 = Recursive.new
+    rec1.recursive << rec2
+    rec2.start_partial_export(file)
+    
+    rec3 = Recursive.new
+    rec2.recursive << rec3
+    rec3.start_partial_export(file)
+    
+    sel = SimpleElement.new(value)
+    sel.start_partial_export(file)
+    rec3.abc = sel
+    
+    rec1.end_partial_export(file)
+    
+    file.close
+    validate_well_formed(filename)
+  end
 end

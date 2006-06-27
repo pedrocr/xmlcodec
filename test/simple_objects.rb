@@ -45,3 +45,9 @@ class SubelMultElement < XMLElement
   xmlsubel_mult :abc
   xmlsubel_mult :abc2
 end
+
+class Recursive < XMLElement
+  elname 'recursive'
+  xmlsubel :abc
+  xmlsubel_mult :recursive
+end

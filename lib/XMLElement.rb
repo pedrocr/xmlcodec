@@ -491,6 +491,11 @@ module XMLCodec
       if not already_partial_export_ended?
         @already_partial_export_ended = true
         
+        if not already_partial_exported?
+          raise "<#{self} Trying to end the export of an element that hasn't"+
+                " been started yet"
+        end
+        
         each_subelement do |e|
           e.end_partial_export(file)
         end
