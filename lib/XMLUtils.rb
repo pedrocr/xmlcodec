@@ -17,7 +17,7 @@ module XMLUtils
   def self.count_elements(path, filename)
     doc = getdoc(filename)
     i = 0
-    XPath.each(doc, path) {|element| i+=1}
+    REXML::XPath.each(doc, path) {|element| i+=1}
     return i
   end
 
