@@ -44,4 +44,12 @@ class TestXMLStreamParser < Test::Unit::TestCase
     assert_equal(1, listener.abc_id)
     assert(listener.def_id > listener.def_parent_id)
   end
+  
+  def test_entities
+    edoc = '<root>&amp;</root>'
+    
+    parser = XMLUtils::XMLStreamParser.new
+    parser.parse(edoc)
+    assert_equal(edoc, parser.content)
+  end
 end

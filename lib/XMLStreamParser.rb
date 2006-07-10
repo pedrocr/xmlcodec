@@ -86,7 +86,7 @@ module XMLUtils
     end
     
     def text(text)
-      @contents << text
+      @contents << XMLUtils.escape_xml(text)
     end
     
     def tag_end(name)

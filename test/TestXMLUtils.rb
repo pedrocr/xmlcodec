@@ -13,6 +13,7 @@ class TestXMLUtils < Test::Unit::TestCase
     assert_equal '&lt; abc', XMLUtils::escape_xml('< abc')
     assert_equal '&gt; abc', XMLUtils::escape_xml('> abc')
     assert_equal '&amp; abc', XMLUtils::escape_xml('& abc')
+    assert_equal 'abc', XMLUtils::escape_xml('abc')
   end
   
   def test_get_xpath
