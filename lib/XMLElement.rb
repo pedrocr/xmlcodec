@@ -71,6 +71,7 @@ module XMLCodec
     
     # Add a xmlsubel_mult type attribute (wrapper around attr_accessor)
     def self.xmlsubel_mult(name) #:doc:
+      name = name.to_sym
       self._xmlsubel(name)
       self.xmlsubelmultiples << name
       define_method(name){

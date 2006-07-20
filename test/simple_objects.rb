@@ -43,7 +43,7 @@ end
 class SubelMultElement < XMLElement
   elname 'mult'
   xmlsubel_mult :abc
-  xmlsubel_mult :abc2
+  xmlsubel_mult 'abc2' # Use a string and a symbol so that both are checked
 end
 
 class Recursive < XMLElement
