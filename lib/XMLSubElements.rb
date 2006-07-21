@@ -38,6 +38,10 @@ module XMLCodec
       start_partial_export(file)
       end_partial_export(file)
     end
+    
+    def elname
+      '__TEXT__'
+    end
   end
   
   # This is the container class used to hold the elements for the xmlsubelements

@@ -114,6 +114,18 @@ class TestXMLElement < Test::Unit::TestCase
     assert_equal([sel,sel2], el.find_all_named('abc'))
   end
   
+  def test_find_all_with_texts
+    value = 'test'
+    el = SubelElement.new
+    sel = SimpleElement.new(value)
+    sel2 = SimpleElement.new(value)
+    
+    el << sel
+    el << 'some text'
+    el << sel2
+    assert_equal([sel,sel2], el.find_all_named('abc'))
+  end
+  
   def test_xmlsubel_mult
     value1 = 'test'
     value2 = 'test2'
