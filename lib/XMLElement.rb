@@ -185,6 +185,12 @@ module XMLCodec
       define_method('<<') {|value|
         subelements << value
       }
+      define_method(:find_first_named) {|name|
+        subelements.find_first_named(name)
+      }
+      define_method(:find_all_named) {|name|
+        subelements.find_all_named(name)
+      }
       define_method(:has_subelements?) {true}
     end
   

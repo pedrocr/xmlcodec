@@ -58,6 +58,16 @@ module XMLCodec
     end
   
   public
+    # Returns the first element in the collection with the given element name
+    def find_first_named(name)
+      self.find {|el| el.elname.to_s == name.to_s}
+    end
+    
+    # Returns the elements in the collection with the given element name
+    def find_all_named(name)
+      self.find_all {|el| el.elname.to_s == name.to_s}
+    end
+  
     # Adds a value to the collection. The value may be either a String or a 
     # descendant of XMLElement. If it's a string it's converted into a 
     # XMLTextElement
