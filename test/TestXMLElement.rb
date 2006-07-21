@@ -83,6 +83,17 @@ class TestXMLElement < Test::Unit::TestCase
     assert_equal value, el.subelements[0].value
   end
   
+  # Test using "somelement << addsomething" instead of 
+  # "somelement.subelements << addsomething"
+  def test_xmlsubelements_direct
+    value = 'test'
+    el = SubelElement.new
+    sel = SimpleElement.new(value)
+    
+    el << sel
+    assert_equal(sel, el.subelements[0])
+  end
+  
   def test_xmlsubel_mult
     value1 = 'test'
     value2 = 'test2'

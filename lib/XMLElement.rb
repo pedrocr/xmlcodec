@@ -182,6 +182,9 @@ module XMLCodec
         end
         @subelements
       }
+      define_method('<<') {|value|
+        subelements << value
+      }
       define_method(:has_subelements?) {true}
     end
   
