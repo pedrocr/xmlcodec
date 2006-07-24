@@ -101,6 +101,7 @@ class TestXMLElement < Test::Unit::TestCase
     
     el << sel
     assert_equal(sel, el.find_first_named('abc'))
+    assert_equal(sel, el['abc'])
   end
   
   def test_find_all
