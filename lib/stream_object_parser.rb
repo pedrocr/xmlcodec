@@ -1,5 +1,4 @@
 require "rexml/document"
-require "XMLUtils"
 
 module XMLCodec
   # This class is used internally by the parser to store the information about

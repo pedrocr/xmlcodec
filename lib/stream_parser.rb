@@ -1,5 +1,4 @@
 require "rexml/document"
-require "XMLUtils"
 
 module XMLUtils
   class XMLSParserContents

@@ -1,5 +1,3 @@
-require 'XMLUtils'
-
 module XMLCodec
   # A simple element that has only text inside. This is used inside 
   # XMLSubElements to be able to directly add strings to it and have them be 

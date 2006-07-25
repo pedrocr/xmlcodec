@@ -1,6 +1,3 @@
-require File.dirname(__FILE__) + '/stream_parser'
-require File.dirname(__FILE__) + '/subelements'
-
 module XMLCodec
   # This class should be inherited from to create classes that are able to
   # import and export XML elements and their children. It provides three main
