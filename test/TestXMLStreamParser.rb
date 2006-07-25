@@ -1,8 +1,4 @@
-$:.unshift File.join(File.dirname(__FILE__), "..")
-$-w = true
-
-require 'test/unit'
-require 'XMLStreamParser'
+require File.dirname(__FILE__) + '/test_helper'
 
 class MyXMLStreamListener
   attr_reader :def_id, :def_parent_id

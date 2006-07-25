@@ -1,4 +1,3 @@
-require 'XMLElement'
 include XMLCodec
 
 class SimpleElement < XMLElement

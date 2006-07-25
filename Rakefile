@@ -46,10 +46,7 @@ Rake::GemPackageTask.new(spec) do |pkg|
 end
 
 Rake::TestTask.new do |t|
-  t.libs << "test"
   t.test_files = FileList['test/Test*.rb']
-  t.libs = ['../lib','..']
-  t.ruby_opts = ['-xtest']
   t.verbose = true
 end
 

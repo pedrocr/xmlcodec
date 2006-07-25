@@ -1,7 +1,5 @@
-require 'test/unit'
-require 'xmlcodec'
+require File.dirname(__FILE__) + '/test_helper'
 require 'rexml/document'
-require 'simple_objects'
 
 class TestXMLElement < Test::Unit::TestCase
   def test_xmlsubel

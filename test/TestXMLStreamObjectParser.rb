@@ -1,6 +1,4 @@
-require "test/unit"
-require "XMLStreamObjectParser"
-require 'simple_objects.rb'
+require File.dirname(__FILE__) + '/test_helper'
 
 include XMLCodec
 

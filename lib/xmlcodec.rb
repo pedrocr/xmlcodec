@@ -1,4 +1,4 @@
-require 'XMLElement'
+require 'element'
 require 'XMLUtils'
-require 'XMLStreamObjectParser'
-require 'XMLStreamParser'
+require 'stream_object_parser'
+require 'stream_parser'

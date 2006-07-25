@@ -1,7 +1,4 @@
-$:.unshift File.join(File.dirname(__FILE__), "..")
-
-require 'test/unit'
-require 'XMLUtils'
+require File.dirname(__FILE__) + '/test_helper'
 
 class TestXMLUtils < Test::Unit::TestCase
   def test_create_open_tag

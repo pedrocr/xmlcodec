@@ -1,6 +1,4 @@
-require 'test/unit'
-require 'XMLUtils'
-require 'simple_objects'
+require File.dirname(__FILE__) + '/test_helper'
 
 class TestPartialExport < Test::Unit::TestCase
   def validate_well_formed(filename)
@@ -12,23 +10,23 @@ class TestPartialExport < Test::Unit::TestCase
 	end
 
   def test_simple
+    @filename = 'test_partial_export_simple.xml'
     value = "somevalue"
-    filename = 'test_partial_export_simple.xml'
   
-    file = File.open(filename, "w")
+    file = File.open(filepath, "w")
     sel = SimpleElement.new(value)
     sel.partial_export(file)
     file.close
   
-    validate_well_formed(filename)
-    compare_xpath(value, filename, "/abc")
+    validate_well_formed(filepath)
+    compare_xpath(value, filepath, "/abc")
   end
   
   def test_double
     value = 'somevalue'
-    filename = 'test_partial_export_double.xml'
+    @filename = 'test_partial_export_double.xml'
     
-    file = File.open(filename, "w")
+    file = File.open(filepath, "w")
     sel = SimpleElement.new(value)
     el = TestElement.new
     el.abc = sel
@@ -37,15 +35,15 @@ class TestPartialExport < Test::Unit::TestCase
     el.end_partial_export(file)
     file.close
     
-    validate_well_formed(filename)
-    compare_xpath(value, filename, "/subel/abc")
+    validate_well_formed(filepath)
+    compare_xpath(value, filepath, "/subel/abc")
   end
   
   def test_triple
     value = 'somevalue'
-    filename = 'test_partial_export_double.xml'
+    @filename = 'test_partial_export_double.xml'
     
-    file = File.open(filename, "w")
+    file = File.open(filepath, "w")
     sel = SimpleElement.new(value)
     el1 = TestElement.new
     el2 = TestElement.new
@@ -56,30 +54,30 @@ class TestPartialExport < Test::Unit::TestCase
     el1.end_partial_export(file)
     file.close
     
-    validate_well_formed(filename)
-    compare_xpath(value, filename, "/subel/subel/abc")
+    validate_well_formed(filepath)
+    compare_xpath(value, filepath, "/subel/subel/abc")
   end
   
   def test_attr
     value = 'somevalue'
-    filename = 'test_partial_export_double.xml'
+    @filename = 'test_partial_export_double.xml'
     
-    file = File.open(filename, "w")
+    file = File.open(filepath, "w")
     el = TestElement.new
     el.someattr = value
     
     el.partial_export(file)
     file.close
     
-    compare_xpath(value, filename, "/subel/@someattr")
+    compare_xpath(value, filepath, "/subel/@someattr")
   end
   
   def test_mult
     value1 = 'somevalue1'
     value2 = 'somevalue2'
-    filename = 'test_partial_export_mult.xml'
+    @filename = 'test_partial_export_mult.xml'
     
-    file = File.open(filename, "w")
+    file = File.open(filepath, "w")
     sel1 = SimpleElement.new(value1)
     sel2 = SimpleElement.new(value2)
     
@@ -93,17 +91,17 @@ class TestPartialExport < Test::Unit::TestCase
     
     file.close
     
-    validate_well_formed(filename)
-    compare_xpath(value1, filename, "/mult/abc[1]")
-    compare_xpath(value2, filename, "/mult/abc[2]")
+    validate_well_formed(filepath)
+    compare_xpath(value1, filepath, "/mult/abc[1]")
+    compare_xpath(value2, filepath, "/mult/abc[2]")
   end
   
   def test_subelements
     value1 = 'somevalue1'
     value2 = 'somevalue2'
-    filename = 'test_partial_export_subelements.xml'
+    @filename = 'test_partial_export_subelements.xml'
     
-    file = File.open(filename, "w")
+    file = File.open(filepath, "w")
     sel1 = SimpleElement.new(value1)
     sel2 = SimpleElement.new(value2)
     
@@ -117,17 +115,17 @@ class TestPartialExport < Test::Unit::TestCase
     
     file.close
     
-    validate_well_formed(filename)
-    compare_xpath(value1, filename, "/subels/abc[1]")
-    compare_xpath(value2, filename, "/subels/abc[2]")
+    validate_well_formed(filepath)
+    compare_xpath(value1, filepath, "/subels/abc[1]")
+    compare_xpath(value2, filepath, "/subels/abc[2]")
   end
   
   def test_subelements_multiple
     value1 = 'somevalue1'
     value2 = 'somevalue2'
-    filename = 'test_partial_export_subelements2.xml'
+    @filename = 'test_partial_export_subelements2.xml'
     
-    file = File.open(filename, "w")
+    file = File.open(filepath, "w")
     sel1 = SimpleElement.new(value1)
     sel2 = SimpleElement.new(value2)
     
@@ -138,14 +136,14 @@ class TestPartialExport < Test::Unit::TestCase
     
     file.close
     
-    validate_well_formed(filename)
-    compare_xpath(value1, filename, "/subels/abc[1]")
-    compare_xpath(value2, filename, "/subels/abc[2]")
+    validate_well_formed(filepath)
+    compare_xpath(value1, filepath, "/subels/abc[1]")
+    compare_xpath(value2, filepath, "/subels/abc[2]")
   end
   
   def test_recursive
-    filename = 'test_partial_export_recursive.xml'
-    file = File.open(filename, "w")
+    @filename = 'test_partial_export_recursive.xml'
+    file = File.open(filepath, "w")
     
     value = 'somevalue'
   
@@ -167,6 +165,6 @@ class TestPartialExport < Test::Unit::TestCase
     rec1.end_partial_export(file)
     
     file.close
-    validate_well_formed(filename)
+    validate_well_formed(filepath)
   end
 end
