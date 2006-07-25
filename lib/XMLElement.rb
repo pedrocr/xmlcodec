@@ -230,7 +230,11 @@ module XMLCodec
     # be used for elements that contain only text and no subelements
     def self.elwithvalue
       define_method(:hasvalue?){true}
-      define_method(:initialize){|value| @value = value}
+      self.class_eval do
+        def initialize(value=nil)
+          @value = value
+        end
+      end
       attr_accessor :value
     end
   

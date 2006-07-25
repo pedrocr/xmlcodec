@@ -218,4 +218,15 @@ class TestXMLElement < Test::Unit::TestCase
     assert_equal 0, el.subelements.size
     assert_nil el.subelements[0]
   end
+  
+  def test_elwithvalue_methods
+    v = 'Some Value'
+    
+    el = ValueElement.new
+    el.value = v
+    assert_equal v, el.value
+    
+    el = ValueElement.new(v)
+    assert_equal v, el.value
+  end
 end

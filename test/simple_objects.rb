@@ -51,3 +51,8 @@ class Recursive < XMLElement
   xmlsubel :abc
   xmlsubel_mult :recursive
 end
+
+class ValueElement < XMLElement
+  elwithvalue
+  elname 'valueelement'
+end
