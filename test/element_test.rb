@@ -227,4 +227,12 @@ class TestXMLElement < Test::Unit::TestCase
     el = ValueElement.new(v)
     assert_equal v, el.value
   end
+  
+  def test_auto_conversion_from_string
+    v = 'Some Value'
+    vparent = ValueParent.new
+    vparent.valueelement = v
+    assert_kind_of ValueElement, vparent.valueelement
+    assert_equal vparent.valueelement.value, v
+  end
 end

@@ -61,7 +61,8 @@ module XMLCodec
   # XMLSOParserElement#consume.
   class XMLStreamObjectParser
     # Create a new parser with a listener.
-    def initialize(listener=nil)
+    def initialize(base_element, listener=nil)
+      @base_element = base_element
       @listener = listener
       @children = Hash.new([])
       @currel = 0
@@ -76,7 +77,7 @@ module XMLCodec
     end
 
     def get_elclass(name)
-      XMLCodec::XMLElement.get_element_class(name)
+      @base_element.get_element_class(name)
     end
     
     def curr_element

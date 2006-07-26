@@ -1,16 +1,20 @@
 include XMLCodec
 
-class SimpleElement < XMLElement
+class BaseFormat < XMLElement
+  xmlformat 'Base Format'
+end
+
+class SimpleElement < BaseFormat
   elwithvalue
   elname 'abc'
 end
 
-class SimpleElement2 < XMLElement
+class SimpleElement2 < BaseFormat
   elwithvalue
   elname 'abc1'
 end
 
-class SimpleElementMultName < XMLElement
+class SimpleElementMultName < BaseFormat
   elwithvalue
   elnames 'abc2', 'abc3'
   
@@ -26,7 +30,7 @@ class SimpleElementMultName < XMLElement
   end
 end
 
-class TestElement < XMLElement
+class TestElement < BaseFormat
   elname 'subel'
   xmlsubel :abc
   xmlsubel :abc2
@@ -34,24 +38,29 @@ class TestElement < XMLElement
   xmlattr :someattr
 end
 
-class SubelElement < XMLElement
+class SubelElement < BaseFormat
   elname 'subels'
   xmlsubelements
 end
 
-class SubelMultElement < XMLElement
+class SubelMultElement < BaseFormat
   elname 'mult'
   xmlsubel_mult :abc
   xmlsubel_mult 'abc2' # Use a string and a symbol so that both are checked
 end
 
-class Recursive < XMLElement
+class Recursive < BaseFormat
   elname 'recursive'
   xmlsubel :abc
   xmlsubel_mult :recursive
 end
 
-class ValueElement < XMLElement
+class ValueParent < BaseFormat
+  elname 'valueparent'
+  xmlsubel 'valueelement'
+end
+
+class ValueElement < BaseFormat
   elwithvalue
   elname 'valueelement'
 end

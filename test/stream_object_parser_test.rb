@@ -42,7 +42,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     file = '<abc>'+value+'</abc>'
     
     listener = MyStreamListener.new
-    parser = XMLStreamObjectParser.new(listener)
+    parser = XMLStreamObjectParser.new(BaseFormat, listener)
     parser.parse(file)
     el = listener.abc.get_object
     assert_equal el.value, value
@@ -54,7 +54,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     file = '<subel someattr="'+attrvalue+'"><abc>'+value+'</abc></subel>'
     
     listener = MyStreamListener.new
-    parser = XMLStreamObjectParser.new(listener)
+    parser = XMLStreamObjectParser.new(BaseFormat, listener)
     parser.parse(file)
     
     el = listener.abc.get_object
@@ -70,7 +70,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     file = '<mult><abc>'+value+'</abc></mult>'
     
     listener = MyStreamListener.new
-    parser = XMLStreamObjectParser.new(listener)
+    parser = XMLStreamObjectParser.new(BaseFormat, listener)
     parser.parse(file)
     
     el = listener.abc.get_object
@@ -83,7 +83,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     file = '<subels><abc>'+value+'</abc></subels>'
     
     listener = MyStreamListener.new
-    parser = XMLStreamObjectParser.new(listener)
+    parser = XMLStreamObjectParser.new(BaseFormat, listener)
     parser.parse(file)
     
     el = listener.abc.get_object
@@ -96,7 +96,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     file = '<subel><abc>'+value+'</abc></subel>'
     
     listener = MyConsumingStreamListener.new
-    parser = XMLStreamObjectParser.new(listener)
+    parser = XMLStreamObjectParser.new(BaseFormat, listener)
     parser.parse(file)
     
     el = listener.abc.get_object
@@ -110,7 +110,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     file = '<subels><abc2>'+value1+'</abc2><abc3>'+value2+'</abc3></subels>'
   
     listener = MyStreamListener.new
-    parser = XMLStreamObjectParser.new(listener)
+    parser = XMLStreamObjectParser.new(BaseFormat, listener)
     parser.parse(file)
     
     el = listener.subels.get_object
@@ -127,7 +127,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     file = '<mult><abc2>'+value1+'</abc2><abc3>'+value2+'</abc3></mult>'
   
     listener = MyStreamListener.new
-    parser = XMLStreamObjectParser.new(listener)
+    parser = XMLStreamObjectParser.new(BaseFormat, listener)
     parser.parse(file)
     
     el = listener.mult.get_object
@@ -143,7 +143,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     file = '<subel><abc3>'+value+'</abc3></subel>'
   
     listener = MyStreamListener.new
-    parser = XMLStreamObjectParser.new(listener)
+    parser = XMLStreamObjectParser.new(BaseFormat, listener)
     parser.parse(file)
     
     el = listener.subel.get_object
@@ -157,7 +157,7 @@ class TestXMLStreamObjectParser < Test::Unit::TestCase
     file = '<subel><abc>'+value+'</abc></subel>'
     
     listener = MyStreamListener.new
-    parser = XMLStreamObjectParser.new(listener)
+    parser = XMLStreamObjectParser.new(BaseFormat, listener)
     parser.parse(file)
     
     el1 = listener.subel

@@ -58,8 +58,7 @@ module XMLCodec
       attr_reader name
       define_method((name.to_s+"=").to_sym) { |value|
         if value.is_a? String or value.is_a? Fixnum
-          elclass = XMLCodec::XMLElement.get_element_class(name)
-          value = elclass.new(value)
+          value = self.class.get_element_class(name).new(value)
         end
         value.__parent = self if value
         instance_variable_set "@#{name}", value
@@ -200,8 +199,15 @@ module XMLCodec
       attr_accessor name
     end
     
-    # This is the hash that gives classes for the element names that are declared.
-    ElClasses = {}
+    # Defines a new xml format (like XHTML or DocBook). This should be used in 
+    # a class that's the super class of all the elements of a format
+    def self.xmlformat(name=nil)
+      self.const_set('ElClasses', {}) 
+    end
+    
+    def self.elclasses
+      self.const_get('ElClasses')
+    end
     
     # Sets the element name for the element
     def self.elname(name)
@@ -211,10 +217,10 @@ module XMLCodec
     # Sets several element names for the element
     def self.elnames(*names)
       define_method(:elname){names[0].to_sym}
-    
+
       eln = get_elnames
       names.each {|n| eln << n}
-      names.each {|n| ElClasses[n.to_sym] = self}
+      names.each {|n| elclasses[n.to_sym] = self}
     end
     
     # Returns the list of element names for the element
@@ -322,7 +328,7 @@ module XMLCodec
   
     # Gets the class for a certain element name.
     def self.get_element_class(name)
-      cl = ElClasses[name.to_sym]
+      cl = elclasses[name.to_sym]
   	  if not cl
   		  raise "No class defined for element type: '" + name.to_s + "'"
   		end
@@ -391,7 +397,7 @@ module XMLCodec
     # Import the XML directly from the text. This call receives the text and the
     # classes that should be used to import the subelements.
     def self.import_xml_text(text)
-      parser = XMLStreamObjectParser.new(ElClasses)
+      parser = XMLStreamObjectParser.new(self)
       parser.parse(text)
       parser.top_element
     end
