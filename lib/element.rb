@@ -1,4 +1,7 @@
 module XMLCodec
+  class ElementClassNotFound < RuntimeError
+  end
+
   # This class should be inherited from to create classes that are able to
   # import and export XML elements and their children. It provides three main
   # functions: xmlattr, xmlsubel and xmlsubel_mult.
@@ -266,17 +269,20 @@ module XMLCodec
     end
     
     # Which level of indentation are we in?
-    def indent_level
-      if not self.instance_variables.index '@indent_level'
-        curr = self
-        level = 0
-        while curr = curr.__parent
-          level +=1
-        end
-        @indent_level = level 
-      end
-      @indent_level
-    end
+    #
+    # This is currently disabled until I get around to implementing proper and 
+    # tested indent support.
+    #def indent_level
+    #  if not self.instance_variables.index '@indent_level'
+    #    curr = self
+    #    level = 0
+    #    while curr = curr.__parent
+    #      level +=1
+    #    end
+    #    @indent_level = level 
+    #  end
+    #  @indent_level
+    #end
     
     # Iterate all of the subelements
     # We copy everything into an array and iterate that because #each doesn't
@@ -322,23 +328,25 @@ module XMLCodec
     # with the whitespace that should precede every line. Extra levels of
     # indentation can be passed so that a caller can calculate the whitespace
     # to indent an element X levels deeper than this one.
-    def indentation(extra=0)
-      INDENT_STR*(indent_level+extra)
-    end
+    #
+    # This is currently disabled until I get around to implementing proper and 
+    # tested indent support.
+    #def indentation(extra=0)
+    #  INDENT_STR*(indent_level+extra)
+    #end
   
     # Gets the class for a certain element name.
     def self.get_element_class(name)
       cl = elclasses[name.to_sym]
   	  if not cl
-  		  raise "No class defined for element type: '" + name.to_s + "'"
+  		  raise ElementClassNotFound, "No class defined for element type: '" + name.to_s + "'"
   		end
   		cl
     end
     
     # Gets the possible element names for a certain element.
     def self.get_element_names(name)
-      cl = get_element_class(name)
-      [name.to_s]+cl.get_elnames
+      get_element_class(name).get_elnames
     end
     
     # Method that checks if a given class has subelements. This is usually only

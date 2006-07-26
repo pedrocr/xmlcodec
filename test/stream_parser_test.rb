@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/test_helper'
 class MyXMLStreamListener
   attr_reader :def_id, :def_parent_id
   attr_reader :abc_id, :abc_parent_id
+  attr_reader :abc_content
   
   def el_def(el)
     @def_id, = el.element_id
@@ -13,6 +14,7 @@ class MyXMLStreamListener
   def el_abc(el)
     @abc_id, = el.element_id
     @abc_parent_id = el.parent_id
+    @abc_content = el.content
     el.consume
   end
 end
@@ -38,6 +40,7 @@ class TestXMLStreamParser < Test::Unit::TestCase
     assert_equal(listener.abc_id, listener.def_parent_id)
     assert_equal(0, listener.abc_parent_id)
     assert_equal(1, listener.abc_id)
+    assert_equal(@doc_no_def, listener.abc_content)
     assert(listener.def_id > listener.def_parent_id)
   end
   

@@ -5,6 +5,7 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
+require 'rcov/rcovtask'
 require 'rubygems'
 
 task :default => ['test']
@@ -69,6 +70,13 @@ task :stats do
   ratio = test_code.to_f/code_code.to_f
   
   puts "Code to test ratio: 1:%.2f" % ratio
+end
+
+Rcov::RcovTask.new do |t|
+  t.libs << "test"
+  t.test_files = FileList['test/*_test.rb']
+  t.output_dir = 'test/coverage'
+  t.verbose = true
 end
 
 def count_lines(files)

@@ -53,12 +53,6 @@ module XMLCodec
       @parent = parent
     end
     
-  private
-    # Get the class for a given element name
-    def elclass(name)
-      XMLElement.get_element_class(name)
-    end
-  
   public
     # Returns the first element in the collection with the given element name
     def find_first_named(name)
@@ -94,17 +88,6 @@ module XMLCodec
     # Create the XML of all the elements by creating the XML for each of them.
     def create_xml(parent)
       @elements.each{|e| e.create_xml(parent)}
-    end
-    
-    # Import the XML of all the elements
-    def import_xml(xmlelements)
-      xmlelements.each do |xmlel|
-        if xmlel.kind_of? REXML::Text
-          self << xmlel.to_s
-        else
-          self << elclass(xmlel.name.to_sym).import_xml(xmlel)
-        end
-      end
     end
     
     # Iterate all the values in the collection

@@ -235,4 +235,16 @@ class TestXMLElement < Test::Unit::TestCase
     assert_kind_of ValueElement, vparent.valueelement
     assert_equal vparent.valueelement.value, v
   end
+  
+  def test_get_element_class
+    assert_equal SimpleElement, BaseFormat.get_element_class('abc')
+    assert_equal SimpleElement, BaseFormat.get_element_class(:abc)
+    assert_raise ElementClassNotFound do 
+      BaseFormat.get_element_class(:nosuchclass)
+    end
+  end
+  
+  def test_get_element_names
+    assert_equal ['abc'], BaseFormat.get_element_names('abc')
+  end
 end

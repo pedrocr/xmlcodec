@@ -14,10 +14,6 @@ module XMLUtils
       add(content)
     end
     
-    def array_from(start)
-      @contents[start..-1]
-    end
-    
     def text_from(start)
       @contents[start..-1].join
     end

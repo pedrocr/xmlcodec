@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/test_helper'
+require 'tmpdir'
 
 class TestXMLUtils < Test::Unit::TestCase
   def test_create_open_tag
@@ -44,5 +45,23 @@ class TestXMLUtils < Test::Unit::TestCase
     assert_equal result, XMLUtils::get_xpath(path, xml, opts)
     assert_equal result, XMLUtils::get_xpath(path, StringIO.new(xml), opts)
     assert_equal result, XMLUtils::get_xpath(path, REXML::Document.new(xml), opts)
+  end
+  
+  def test_count_elements
+    text = '<root><abc/><abc/></root>'
+    filename = File.join(Dir::tmpdir, 'test_count_elements.xml')
+    f = File.open(filename, 'w')
+    f << text
+    f.close
+    assert_equal 2, XMLUtils::count_elements('//abc', filename)
+  end
+  
+  def test_element_exists
+    text = '<root><abc/><abc/></root>'
+    filename = File.join(Dir::tmpdir, 'test_element_exists.xml')
+    f = File.open(filename, 'w')
+    f << text
+    f.close
+    assert XMLUtils::element_exists('//abc', filename)
   end
 end
