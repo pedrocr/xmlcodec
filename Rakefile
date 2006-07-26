@@ -1,5 +1,5 @@
 PKG_NAME = 'xmlcodec'
-PKG_VERSION = '0.0.5'
+PKG_VERSION = '0.1.0'
 
 require 'rake'
 require 'rake/testtask'
