@@ -1,7 +1,6 @@
 require 'test/unit'
 require 'tmpdir'
 require File.dirname(__FILE__) + '/../lib/xmlcodec'
-require File.dirname(__FILE__) + '/../lib/XMLUtils'
 require File.dirname(__FILE__) + '/simple_objects'
 
 
