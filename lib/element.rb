@@ -205,11 +205,11 @@ module XMLCodec
     # Defines a new xml format (like XHTML or DocBook). This should be used in 
     # a class that's the super class of all the elements of a format
     def self.xmlformat(name=nil)
-      self.const_set('ElClasses', {}) 
+      class_variable_set('@@elclasses', {})
     end
     
     def self.elclasses
-      self.const_get('ElClasses')
+      class_variable_get('@@elclasses')
     end
     
     # Sets the element name for the element
