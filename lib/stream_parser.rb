@@ -30,15 +30,16 @@ module XMLUtils
   class XMLSParserElement
     attr_reader :name
     attr_reader :element_id
-    attr_reader :parent_id
+    attr_reader :parent_id, :parent
     attr_reader :elstart
 
-    def initialize(name, elstart, parser, parent_id)
+    def initialize(name, elstart, parser, parent)
       @name = name
       @parser = parser
       @elstart = elstart
       @element_id = parser.new_element_id
-      @parent_id = parent_id
+      @parent = parent
+      @parent_id = parent.element_id if parent
     end
     
     def self.root(parser)
@@ -76,7 +77,7 @@ module XMLUtils
     
     def tag_start(name, attrs)
       @elements << XMLSParserElement.new(name, @contents.size, 
-                                              self, @elements[-1].element_id)
+                                              self, @elements[-1])
       @contents << XMLUtils.create_open_tag(name, attrs)
     end
     

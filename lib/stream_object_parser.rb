@@ -4,7 +4,7 @@ module XMLCodec
   # This class is used internally by the parser to store the information about
   # each of the elements that gets created.
   class XMLSOParserElement
-    attr_reader :elclass, :consumed, :id, :depth
+    attr_reader :elclass, :consumed, :id, :depth, :parent, :name
     
     # Create a new instance with the element name, a hash of atributes, it's
     # import/export class, the parent element and it's id
