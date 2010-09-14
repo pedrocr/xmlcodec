@@ -5,7 +5,7 @@ require File.dirname(__FILE__) + '/simple_objects'
 
 
 class Test::Unit::TestCase
-  def filepath
-    File.join(Dir::tmpdir, @filename)
+  def filepath(filename)
+    File.join(Dir::tmpdir, filename)
   end
 end
