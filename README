@@ -1,6 +1,19 @@
-This is a library that helps create Ruby importers/exporters of XML. The core
-of it is XMLCodec::XMLElement. To create an importer exporter for this XML
-format:
+= xmlcodec
+
+This is a framework to create importers/exporters of XML formats into Ruby objects. To create a new importer/exporter all you have to do is create a simple ruby class for each of the XML elements. This then gives you four main API interactions for free, all using the same objects:
+
+* Create a tree of ruby objects and export it as XML
+* Import a full XML document as a ruby tree of objects
+* Stream parse a XML document with events for elements as Ruby objects
+* Create unlimited sized XML documents with constant memory usage by partially writing out the XML at the same time the in-memory tree is being created.
+
+The first two API's handle full trees at all times. The stream parser allows you to parse a very big XML file as a stream like a SAX parser but receiving fully-formed Ruby objects as events so as to use the same object APIs without ever having the full tree in memory. The partial export API allows you to create huge XML files the same way you'd create a small one (by putting elements in the Ruby tree) but without having to create the whole tree in memory at any one time.
+
+This project was created as an extract of work done at {Arquivo Nacional da Torre do Tombo}[http://antt.dgarq.gov.pt/].
+
+== Usage
+
+To create an importer exporter for this XML format:
 
   <root>
     <firstelement>
@@ -13,7 +26,7 @@ format:
     </firstelement>
   </root>
   
-you'd create the following classes
+you would create the following classes:
 
   require 'xmlcodec'
 
@@ -53,29 +66,58 @@ access to a container with the collection of the elements.
 This is all you have to define to implement the importer/exporter for the 
 format. 
 
-To import from a file just do:
+To import XML just do:
 
-  Root.import_xml_text(File.new('somefilename.xml'))
-
-or from a REXML DOM:
-
-  Root.import_xml(REXML::Document.new(File.new('somefilename.xml')))
+  # From text
+  Root.import_xml_text(File.new('file.xml'))
   
-To export into a REXML DOM Document or Element do:
+  # From a REXML DOM
+  Root.import_xml(REXML::Document.new(File.new('file.xml')))
+  
+To export do:
 
-  somerootelement.create_xml(REXML::Document.new)
-  
-or to some XML text:
-  
-  text = somerootelement.xml_text
+  # To generate XML text
+  string = some_element.xml_text
+
+  # To generate REXML DOM
+  doc = some_element.create_xml(REXML::Document.new)
   
 All these calls require keeping the whole contents of the document in memory.
-The ones that use the REXML DOM will have it twice. To handle large documents
-with constant memory usage you should try importing with
-XMLCodec::XMLStreamObjectParser and exporting with 
-XMLCodec::XMLElement#partial_export.
+The ones that use the REXML DOM will have it twice. To handle large documents with constant memory usage another set of APIs is available.
+
+To stream parse a large document you'd do something like:
+
+  class MyStreamListener
+    def el_secondelement(el)
+      obj = el.get_object
+    
+      ... do something with obj ...
+    
+      # To remove it from the stream so the parent 
+      # doesn't include it and memory is freed.
+      el.consume
+    end
+  end
+  
+  parser = XMLStreamObjectParser.new(MyStreamListener.new)
+  parser.parse(some_string_or_file)
+
+You can define as many listening methods as elements you'd like to listen to and by doing el.consume the element is not kept around and memory is freed. Note that when you consume an element it will not be part of the parent when that event comes around.
+
+To produce very large XML files with constant memory usage you would do something like:
+
+  file = File.new('somefile.xml')
+  fe = FirstElement.new
+  10000.times do |i|
+    se = SecondElement.new(i)
+    fe.secondelement << se
+    se.partial_export(file)
+  end
+  fe.end_partial_export(file)
+
+Here 10000 instances of <secondelement> where written to the file. Because we did the partial_export calls inside the loop, each instance was written to file and removed from the parent so at any one point we only have one instance of FirstElement and SecondElement in memory. Besides the calls to the partial_export methods all the code is the same you'd use to create the tree in memory.
 
 
-Author:
-  Pedro Côrte-Real
-  <pedro@pedrocr.net>
+== Author
+
+Pedro Côrte-Real <pedro@pedrocr.net>
