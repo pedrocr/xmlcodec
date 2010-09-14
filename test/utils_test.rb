@@ -16,29 +16,29 @@ class TestXMLUtils < Test::Unit::TestCase
   
   def test_get_xpath
     opts = {}
-    assert_xpath_equal('abc', '//xpto', '<xpto>abc<xpto>')
+    assert_xpath_equal('abc', '//xpto', '<xpto>abc</xpto>')
     
-    assert_xpath_equal('abc', '//xpto', '<xpto>abc<xpto2>foo</xpto2><xpto>')
+    assert_xpath_equal('abc', '//xpto', '<xpto>abc<xpto2>foo</xpto2></xpto>')
     
     opts[:with_attrs] = true
     opts[:recursive] = false
     opts[:multiple] = false
-    assert_xpath_equal('attr1 abc', '//xpto', '<xpto attr1="attr1">abc<xpto2>foo</xpto2><xpto>', opts)
+    assert_xpath_equal('attr1 abc', '//xpto', '<xpto attr1="attr1">abc<xpto2>foo</xpto2></xpto>', opts)
     
     opts[:with_attrs] = false
     opts[:recursive] = true
     opts[:multiple] = false
-    assert_xpath_equal('abc foo', '//xpto', '<xpto>abc<xpto2 attr1="attr1">foo</xpto2><xpto>', opts)
+    assert_xpath_equal('abc foo', '//xpto', '<xpto>abc<xpto2 attr1="attr1">foo</xpto2></xpto>', opts)
     
     opts[:with_attrs] = true
     opts[:recursive] = true
     opts[:multiple] = false
-    assert_xpath_equal('abc attr1 foo', '//xpto', '<xpto>abc<xpto2 attr1="attr1">foo</xpto2><xpto>', opts)
+    assert_xpath_equal('abc attr1 foo', '//xpto', '<xpto>abc<xpto2 attr1="attr1">foo</xpto2></xpto>', opts)
     
     opts[:with_attrs] = false
     opts[:recursive] = false
     opts[:multiple] = true
-    assert_xpath_equal('abc foo', '//xpto', '<xpto>abc<xpto attr1="attr1">foo</xpto><xpto>', opts)
+    assert_xpath_equal('abc foo', '//xpto', '<xpto>abc<xpto attr1="attr1">foo</xpto></xpto>', opts)
   end
   
   def assert_xpath_equal(result, path, xml, opts={})
