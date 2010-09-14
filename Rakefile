@@ -1,5 +1,5 @@
 PKG_NAME = 'xmlcodec'
-PKG_VERSION = '0.1.1'
+PKG_VERSION = '0.1.2'
 
 require 'rake'
 require 'rake/testtask'
@@ -25,13 +25,13 @@ RDOC_EXTRA_FILES = ['README']
 spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.summary = "Generic Importer/Exporter of XML formats"
+  s.homepage = "http://github.com/pedrocr/xmlcodec" 
   s.name = PKG_NAME
   s.version = PKG_VERSION
   s.author = 'Pedro Côrte-Real'
-  s.email = 'pedrocr@gmail.com'
+  s.email = 'pedro@pedrocr.net'
   s.requirements << 'none'
   s.require_path = 'lib'
-  s.autorequire = 'rake'
   s.files = PKG_FILES
   s.has_rdoc = true
   s.rdoc_options = RDOC_OPTIONS
