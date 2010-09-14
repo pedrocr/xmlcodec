@@ -14,16 +14,14 @@ class Test::Unit::TestCase
   end
 
   def validate_well_formed
-    filename = filename || @temp_path
     assert(system("xmllint --version > /dev/null 2>&1"), 
            "xmllint utility not installed"+
            "(on ubuntu/debian install package libxml2-utils)")      
-		assert(system("xmllint #{filename} >/dev/null"), 
-           "Validation failed for #{filename}")
+		assert(system("xmllint #{@temp_path} >/dev/null"), 
+           "Validation failed for #{@temp_path}")
 	end
 
   def compare_xpath(value, path)
-    filename = filename || @temp_path
-		assert_equal(value.strip, XMLUtils::select_path(path, filename).strip)
+		assert_equal(value.strip, XMLUtils::select_path(path, @temp_path).strip)
 	end
 end
