@@ -20,7 +20,7 @@ PKG_FILES = FileList[TEST_FILES,
                      'Rakefile']
 
 RDOC_OPTIONS = ['-S', '-w 2', '-N']
-RDOC_EXTRA_FILES = ['README']
+RDOC_EXTRA_FILES = ['README.rdoc']
 
 spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
@@ -50,7 +50,7 @@ Rake::TestTask.new do |t|
 end
 
 Rake::RDocTask.new do |rd|
-  rd.main = "README"
+  rd.main = "README.rdoc"
   rd.name = :docs
   rd.rdoc_files.include(RDOC_EXTRA_FILES, CODE_FILES)
   rd.rdoc_dir = 'doc'
