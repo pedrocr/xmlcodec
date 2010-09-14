@@ -60,10 +60,13 @@ module XMLUtils
   # Gets the xpath inside a given document that can either be a string or a 
   # REXML::Document
   #
-  # opts can have:
-  #   :multiple: fetch all the occurences of the xpath
-  #   :with_attrs: include the attribute contents in the result
-  #   :recursive: recursively include all the subelements of the matches
+  # Supported options (boolean):
+  # [:multiple] 
+  #   fetch all the occurences of the xpath
+  # [:with_attrs] 
+  #   include the attribute contents in the result
+  # [:recursive] 
+  #   recursively include all the subelements of the matches
   def self.get_xpath(path, doc, opts={})
     if doc.is_a? REXML::Document
       doc = doc
