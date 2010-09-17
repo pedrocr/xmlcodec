@@ -19,7 +19,7 @@ PKG_FILES = FileList[TEST_FILES,
                      'LICENSE',
                      'Rakefile']
 
-RDOC_OPTIONS = ['-S', '-w 2', '-N']
+RDOC_OPTIONS = ['-S', '-w 2', '-N', '-c utf8']
 RDOC_EXTRA_FILES = ['README.rdoc']
 
 spec = Gem::Specification.new do |s|
