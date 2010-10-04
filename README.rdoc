@@ -30,17 +30,21 @@ you would create the following classes:
 
   require 'xmlcodec'
 
-  class Root < XMLCodec::XMLElement
+  class Format < XMLCodec::XMLElement
+    xmlformat "Some XML Format Name"
+  end
+
+  class Root < Format
     elname 'root'
     xmlsubel :firstelement
   end
   
-  class FirstElement < XMLCodec::XMLElement
+  class FirstElement < Format
     elname 'firstelement'
     xmlsubel_mult :secondelement
   end
   
-  class SecondElement < XMLCodec::XMLElement
+  class SecondElement < Format
     elname 'secondelement'
     elwithvalue
     xmlattr :firstattr
