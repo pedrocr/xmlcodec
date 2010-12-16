@@ -132,7 +132,7 @@ module XMLCodec
     def self.each_attr    
       if not self.instance_variables.index("@__attr_names")
         names = []
-        # Iterate all the superclasses that are still children of EADElement
+        # Iterate all the superclasses that are still children of XMLElement
         # and iterate each of the attributes
         c = self
         while c.ancestors.index(XMLCodec::XMLElement)
