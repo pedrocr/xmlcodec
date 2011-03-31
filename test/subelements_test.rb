@@ -24,10 +24,20 @@ class TestXMLTextElement < Test::Unit::TestCase
   end
   
   def test_create_xml
-    xmlel = REXML::Element.new 'abc'
+    xmlel = Nokogiri::XML::Element.new('abc',Nokogiri::XML::Document.new)
     value = 'Some Value'
     el = XMLTextElement.new value
     el.create_xml(xmlel)
     assert_equal '<abc>'+value+'</abc>', xmlel.to_s
+  end
+  def test_create_xml_multiple
+    xmlel = Nokogiri::XML::Element.new('abc',Nokogiri::XML::Document.new)
+    value1 = 'Some Value'
+    el1 = XMLTextElement.new value1
+    value2 = 'Some Other Value'
+    el2 = XMLTextElement.new value2
+    el1.create_xml(xmlel)
+    el2.create_xml(xmlel)
+    assert_equal '<abc>'+value1+value2+'</abc>', xmlel.to_s
   end
 end

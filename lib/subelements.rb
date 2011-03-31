@@ -7,7 +7,7 @@ module XMLCodec
   
     # Create a new element for the given string.
     def initialize(string)
-      @value = XMLUtils::escape_xml(string)
+      @value = XMLCodec::XMLUtils::escape_xml(string)
     end
     
     # Simple to_s method that just returns the included string
@@ -17,7 +17,7 @@ module XMLCodec
     
     # Creates the XML for the element by using add_text on the value.
     def create_xml(parent)
-      parent.add_text(@value)
+      parent << Nokogiri::XML::Text.new(@value, parent)
     end
     
     # The XML text of the element is simply it's string value.

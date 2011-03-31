@@ -78,11 +78,11 @@ module XMLUtils
     def tag_start(name, attrs)
       @elements << XMLSParserElement.new(name, @contents.size, 
                                               self, @elements[-1])
-      @contents << XMLUtils.create_open_tag(name, attrs)
+      @contents << XMLCodec::XMLUtils.create_open_tag(name, attrs)
     end
     
     def text(text)
-      @contents << XMLUtils.escape_xml(text)
+      @contents << XMLCodec::XMLUtils.escape_xml(text)
     end
     
     def tag_end(name)

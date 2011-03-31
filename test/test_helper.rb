@@ -22,6 +22,6 @@ class Test::Unit::TestCase
 	end
 
   def compare_xpath(value, path)
-		assert_equal(value.strip, XMLUtils::select_path(path, @temp_path).strip)
+		assert_equal(value.strip, XMLCodec::XMLUtils::select_path(path, @temp_path).strip)
 	end
 end

@@ -1,3 +1,5 @@
+require 'nokogiri'
+
 module XMLCodec
     VERSION = '0.2.0'
 end

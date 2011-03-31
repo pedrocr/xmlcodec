@@ -161,7 +161,7 @@ module XMLCodec
           attrs[a.to_s] = value
         end
       end
-      XMLUtils::create_open_tag(elname.to_s, attrs)
+      XMLCodec::XMLUtils::create_open_tag(elname.to_s, attrs)
     end
     
     # returns a string with the closing tag for the element
@@ -468,7 +468,7 @@ module XMLCodec
     def xml_text
       str = create_open_tag
       if self.hasvalue?
-        str << XMLUtils::escape_xml(self.value)
+        str << XMLCodec::XMLUtils::escape_xml(self.value)
       end
       
       each_subelement do |e|
@@ -501,7 +501,7 @@ module XMLCodec
         
         file << create_open_tag
         if self.hasvalue?
-          file << XMLUtils::escape_xml(self.value)
+          file << XMLCodec::XMLUtils::escape_xml(self.value)
         end
         
         each_subelement do |e|
