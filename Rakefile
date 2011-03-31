@@ -73,7 +73,8 @@ end
 Rcov::RcovTask.new do |t|
   t.libs << "test"
   t.test_files = FileList['test/*_test.rb']
-  t.output_dir = 'test/coverage'
+  t.rcov_opts << ['--exclude "^/"', '--include "lib/.*\.rb"']
+  t.output_dir = 'coverage'
   t.verbose = true
 end
 
