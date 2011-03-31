@@ -55,7 +55,7 @@ module XMLUtils
     end
   end
 
-  class XMLStreamParser
+  class XMLStreamParser < Nokogiri::XML::SAX::Document
     attr_reader :contents
     
     def initialize(listener=nil)
@@ -72,20 +72,21 @@ module XMLUtils
     end
 
     def parse(text)
-      REXML::Document.parse_stream(text, self)
+      parser = Nokogiri::XML::SAX::Parser.new(self)
+      parser.parse(text)
     end
     
-    def tag_start(name, attrs)
+    def start_element(name, attrs)
       @elements << XMLSParserElement.new(name, @contents.size, 
                                               self, @elements[-1])
       @contents << XMLCodec::XMLUtils.create_open_tag(name, attrs)
     end
     
-    def text(text)
+    def characters(text)
       @contents << XMLCodec::XMLUtils.escape_xml(text)
     end
     
-    def tag_end(name)
+    def end_element(name)
       @contents << "</"+name+">"
       if @listener.respond_to? 'el_'+name
         @listener.send('el_'+name, @elements[-1])
@@ -99,10 +100,6 @@ module XMLUtils
     
     def consume
       @contents.erase_from(@elements[-1].elstart)
-    end
-    
-    # Ignore everything except tags and text for now
-    def method_missing(methId, *args)
     end
   end
 end

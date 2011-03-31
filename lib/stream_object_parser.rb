@@ -59,7 +59,7 @@ module XMLCodec
   # The listener will be passed XMLSOParserElement objects. The two relevant
   # methods for it's use are XMLSOParserElement#get_object and 
   # XMLSOParserElement#consume.
-  class XMLStreamObjectParser
+  class XMLStreamObjectParser < Nokogiri::XML::SAX::Document
     # Create a new parser with a listener.
     def initialize(base_element, listener=nil)
       @base_element = base_element
@@ -92,7 +92,8 @@ module XMLCodec
     # Parse the text with the stream parser calling the listener on any events
     # that it listens to.
     def parse(text)
-      REXML::Document.parse_stream(text, self)
+      parser = Nokogiri::XML::SAX::Parser.new(self)
+      parser.parse(text)
     end
   
     # Get the current top element of the parse. This is usually used to get the
@@ -101,18 +102,18 @@ module XMLCodec
       @top_element.get_object if @top_element
     end
     
-    def tag_start(name, attrs) #:nodoc:
+    def start_element(name, attrs) #:nodoc:
       @elements << XMLSOParserElement.new(name, attrs, get_elclass(name), 
                                           curr_element, next_id, 
                                           curr_element.depth+1)
       @currel += 1
     end
 
-    def text(text) #:nodoc:
+    def characters(text) #:nodoc:
       curr_element.add_child(text)
     end
     
-    def tag_end(name) #:nodoc:
+    def end_element(name) #:nodoc:
       obj = curr_element
       
       if @listener.respond_to?("el_"+name)
@@ -129,10 +130,6 @@ module XMLCodec
           
       @elements.pop
       @currel -= 1
-    end
-    
-    # Ignore everything except tags and text for now
-    def method_missing(methId, *args) #:nodoc:
     end
   end
 end
