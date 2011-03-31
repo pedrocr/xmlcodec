@@ -15,16 +15,13 @@ module XMLCodec
   # has no subelements and includes only text content.
   #
   # After the class is defined import_xml can be used to import the content from
-  # a REXML Element or Document and create_xml can be used to create the XML DOM
-  # of the element as a child to a REXML Element or Document. For big documents
+  # a Nokogiri Element or Document and create_xml can be used to create the XML DOM
+  # of the element as a child to a Nokogiri Element or Document. For big documents
   # these are usually too slow and memory hungry, using xml_text to export to 
   # XML and import_xml_text to import XML are probably better ideas. 
   # import_xml_text is just a utility function around XMLStreamObjectParser,
   # that allow more flexible stream parsing of XML files while still using the
   # same XMLElement objects.
-  #
-  # <b>WARNING</b>: This API is still very much a work in progress and very
-  # rough in certain places. Changes will surely be made.
   class XMLElement
     INDENT_STR = '  '
     CACHE = {}
@@ -360,7 +357,7 @@ module XMLCodec
   
 
     # Creates the xml for the element inside the parent element. The parent
-    # passed should be a REXML element or document. This call is recursive
+    # passed should be a Nokogiri XML Node or Document. This call is recursive
     # creating the XML for any subelements. 
     def create_xml(parent)
       xmlel = parent.add_child Nokogiri::XML::Element.new(self.elname.to_s, parent)
@@ -377,8 +374,9 @@ module XMLCodec
       xmlel
     end
     
-    # Import the XML into an object from a REXML element. This call is recursive
-    # and imports any subelements found into the corresponding objects.
+    # Import the XML into an object from a Nokogiri XML Node or Document. 
+    # This call is recursive and imports any subelements found into the 
+    # corresponding objects.
     def self.import_xml(xmlel)
       if xmlel.is_a? Nokogiri::XML::Document
         xmlel = xmlel.root
@@ -402,8 +400,7 @@ module XMLCodec
       new_with_content(attributes, elements)
     end
     
-    # Import the XML directly from the text. This call receives the text and the
-    # classes that should be used to import the subelements.
+    # Import the XML directly from the text.
     def self.import_xml_text(text)
       parser = XMLStreamObjectParser.new(self)
       parser.parse(text)
@@ -467,8 +464,7 @@ module XMLCodec
     end
     
     
-    # create the XML text of the element. This does not use REXML so should be 
-    # pretty fast.
+    # create the XML text of the element
     def xml_text
       str = create_open_tag
       if self.hasvalue?
