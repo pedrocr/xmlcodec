@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + '/test_helper'
-require 'rexml/document'
+require 'nokogiri'
 
 class TestXMLElement < Test::Unit::TestCase
   def test_xmlsubel
@@ -16,15 +16,15 @@ class TestXMLElement < Test::Unit::TestCase
     assert_equal('<abc>'+value+'</abc>', sel.xml_text)
     assert_equal('<subel><abc>'+value+'</abc></subel>', el.xml_text)
 
-    dom = REXML::Document.new
+    dom = Nokogiri::XML::Document.new
     el.create_xml(dom)
     
     assert_equal 1, dom.elements.size
-    eldom = dom.elements['subel']
+    eldom = dom.search('subel')
     assert_not_nil eldom
-    assert_equal 1, eldom.elements.size
+    assert_equal 1, eldom.size
     
-    seldom = eldom.elements['abc']
+    seldom = eldom.search('abc')
     assert_not_nil seldom
     assert_equal value, seldom.text
     
@@ -41,13 +41,13 @@ class TestXMLElement < Test::Unit::TestCase
     
     assert_equal("<subel someattr='"+value+"'></subel>", el.xml_text)
     
-    dom = REXML::Document.new
+    dom = Nokogiri::XML::Document.new
     el.create_xml(dom)
     
     assert_equal 1, dom.elements.size
-    eldom = dom.elements['subel']
+    eldom = dom.search('subel')
     assert_not_nil eldom
-    assert_equal value, eldom.attributes['someattr']
+    assert_equal value, eldom[0].get_attribute('someattr')
     
     el = TestElement.import_xml(dom)
     assert_equal value, el.someattr
@@ -64,15 +64,15 @@ class TestXMLElement < Test::Unit::TestCase
     
     assert_equal('<subels><abc>'+value+'</abc></subels>', el.xml_text)
     
-    dom = REXML::Document.new
+    dom = Nokogiri::XML::Document.new
     el.create_xml(dom)
     
     assert_equal 1, dom.elements.size
-    eldom = dom.elements['subels']
+    eldom = dom.search('subels')
     assert_not_nil eldom
-    assert_equal 1, eldom.elements.size
+    assert_equal 1, eldom.size
     
-    seldom = eldom.elements['abc']
+    seldom = eldom.search('abc')
     assert_not_nil seldom
     assert_equal value, seldom.text
     
@@ -141,16 +141,16 @@ class TestXMLElement < Test::Unit::TestCase
     
     assert_equal('<mult><abc>'+value1+'</abc><abc>'+value2+'</abc></mult>', el.xml_text)
     
-    dom = REXML::Document.new
+    dom = Nokogiri::XML::Document.new
     el.create_xml(dom)
     
     assert_equal 1, dom.elements.size
-    eldom = dom.elements['mult']
+    eldom = dom.search('abc')
     assert_not_nil eldom
-    assert_equal 2, eldom.elements.size
+    assert_equal 2, eldom.size
     
     [value1, value2].each_with_index do |value, index|
-      seldom = eldom.elements[index+1]
+      seldom = eldom[index]
       assert_not_nil seldom
       assert_equal value, seldom.text
       assert_equal 'abc', seldom.name

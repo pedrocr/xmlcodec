@@ -150,7 +150,7 @@ module XMLCodec
       self.class.each_attr do |a|
         value = self.send(a)
         if value
-          parent.add_attribute(a.to_s, value)
+          parent.set_attribute(a.to_s, value)
         end
       end
     end
@@ -363,9 +363,9 @@ module XMLCodec
     # passed should be a REXML element or document. This call is recursive
     # creating the XML for any subelements. 
     def create_xml(parent)
-      xmlel = parent.add_element self.elname.to_s
+      xmlel = parent.add_child Nokogiri::XML::Element.new(self.elname.to_s, parent)
       if self.hasvalue?
-        xmlel.text = self.value
+        xmlel.add_child self.value
       end
       create_xml_attr(xmlel)
       create_xml_subel(xmlel)
@@ -380,14 +380,14 @@ module XMLCodec
     # Import the XML into an object from a REXML element. This call is recursive
     # and imports any subelements found into the corresponding objects.
     def self.import_xml(xmlel)
-      if xmlel.is_a? REXML::Document
+      if xmlel.is_a? Nokogiri::XML::Document
         xmlel = xmlel.root
       end
       
       elements = []
-      xmlel.to_a.each do |e|
-        if e.is_a? REXML::Text
-          elements << e.value
+      xmlel.children.each do |e|
+        if e.text?
+          elements << e.text
         else
           elclass = get_element_class(e.name)
           elements << elclass.import_xml(e)
@@ -395,8 +395,8 @@ module XMLCodec
       end
       
       attributes = {}
-      xmlel.attributes.each do |name, value|
-        attributes[name] = value
+      xmlel.attributes.each do |name, attr|
+        attributes[name] = attr.value
       end
       
       new_with_content(attributes, elements)
