@@ -1,3 +1,6 @@
+require 'simplecov'
+SimpleCov.start
+
 require 'test/unit'
 require 'tmpdir'
 require File.dirname(__FILE__) + '/../lib/xmlcodec'
