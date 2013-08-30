@@ -71,7 +71,7 @@ module XMLCodec
       self._xmlsubel(name)
       self.xmlsubelmultiples << name
       define_method(name){
-        if not self.instance_variables.index("@#{name}")
+        if not self.instance_variables.index("@#{name}".to_sym)
           instance_variable_set "@#{name}", XMLSubElements.new(self)
         end
         instance_variable_get "@#{name}"
@@ -80,7 +80,7 @@ module XMLCodec
     
     # Iterates over the object's XML subelements
     def self.each_subel
-      if not self.instance_variables.index("@__subel_names")
+      if not self.instance_variables.index("@__subel_names".to_sym)
         names = []
         # Iterate all the superclasses that are still children of XMLElement
         # and iterate each of the subelements
@@ -97,7 +97,7 @@ module XMLCodec
     # Iterate all the superclasses that are still children of XMLElement
     # and check if any of them have the subelement mult defined
     def self.subel_mult?(element)
-      if not self.instance_variables.index("@__subel_mult_names")
+      if not self.instance_variables.index("@__subel_mult_names".to_sym)
         names = []
         c = self
         while c.ancestors.index(XMLCodec::XMLElement)
@@ -127,7 +127,7 @@ module XMLCodec
   
     # Iterates over the object's XML atributes
     def self.each_attr    
-      if not self.instance_variables.index("@__attr_names")
+      if not self.instance_variables.index("@__attr_names".to_sym)
         names = []
         # Iterate all the superclasses that are still children of XMLElement
         # and iterate each of the attributes
@@ -173,7 +173,7 @@ module XMLCodec
     # method called #subelements that will return an instance of XMLSubElements
     def self.xmlsubelements #:doc:
       define_method(:subelements) {
-        if not self.instance_variables.index("@subelements")
+        if not self.instance_variables.index("@subelements".to_sym)
           @subelements = XMLSubElements.new(self)
         end
         @subelements
@@ -255,22 +255,12 @@ module XMLCodec
       self.subelements.create_xml(parent)
     end
     
-    # Have we already started the partial export of this element?
-    def already_partial_exported?
-      (@already_partial_exported ||= false)
-    end
-    
-    # Have we already ended the partial export of this element?
-    def already_partial_export_ended?
-      (@already_partial_export_ended ||= false)
-    end
-    
     # Which level of indentation are we in?
     #
     # This is currently disabled until I get around to implementing proper and 
     # tested indent support.
     #def indent_level
-    #  if not self.instance_variables.index '@indent_level'
+    #  if not self.instance_variables.index '@indent_level'.to_sym
     #    curr = self
     #    level = 0
     #    while curr = curr.__parent
@@ -479,6 +469,16 @@ module XMLCodec
       str
     end
     
+    # Have we already started the partial export of this element?
+    def already_partial_exported?
+      (@already_partial_exported ||= false)
+    end
+    
+    # Have we already ended the partial export of this element?
+    def already_partial_export_ended?
+      (@already_partial_export_ended ||= false)
+    end
+
     # Export this element into a file. Will also start to export the parents of
     # the element. It's equivalent to calling start_partial_export followed by
     # end_partial_export.
