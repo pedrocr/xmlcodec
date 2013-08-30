@@ -202,7 +202,7 @@ module XMLCodec
   
     # Add a xmlattr type attribute (wrapper around attr_accessor)
     def self.xmlattr(name) #:doc:
-      self.xmlattrs << name
+      self.xmlattrs << name.to_sym
       attr_accessor name
     end
     

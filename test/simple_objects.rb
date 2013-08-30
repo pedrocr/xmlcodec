@@ -41,6 +41,7 @@ class TestElement < BaseFormat
   xmlsubel :abc2
   xmlsubel :subel
   xmlattr :someattr
+  xmlattr 'anotherattr'
 end
 
 class SubelElement < BaseFormat

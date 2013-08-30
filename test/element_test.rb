@@ -37,9 +37,10 @@ class TestXMLElement < Test::Unit::TestCase
     el = TestElement.new
     
     el.someattr = value
+    el.anotherattr = value
     assert_equal(value, el.someattr) 
     
-    assert_equal("<subel someattr='"+value+"'></subel>", el.xml_text)
+    assert_equal("<subel someattr='#{value}' anotherattr='#{value}'></subel>", el.xml_text)
     
     dom = Nokogiri::XML::Document.new
     el.create_xml(dom)
@@ -51,6 +52,7 @@ class TestXMLElement < Test::Unit::TestCase
     
     el = TestElement.import_xml(dom)
     assert_equal value, el.someattr
+    assert_equal value, el.anotherattr
   end
   
   def test_xmlsubelements
