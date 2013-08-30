@@ -12,18 +12,15 @@ class ConsumeAllAsTextTest < Test::Unit::TestCase
     xmlattr :myattr
   end
 
-  # Tests both through DOM and text to make sure both code paths are working
-  def double_test(text)
-    sel = BaseFormat.import_xml text
-    yield sel
-    sel = BaseFormat.import_xml Nokogiri::XML::Document.parse(text)
-    yield sel
+  double_import_test(:test_import_elements, BaseFormat,
+              "<abc myattr='real'><otherel>foo</otherel>text</abc>") do |sel|
+    assert_equal 'real', sel.myattr
+    assert_equal "<otherel>foo</otherel>text", sel.value
   end
 
-  def test_import_elements
-    double_test("<abc myattr='real'><otherel>foo</otherel>text</abc>") do |sel|
-      assert_equal 'real', sel.myattr
-      assert_equal "<otherel>foo</otherel>text", sel.value
-    end
+  double_import_test(:test_nested_elements, BaseFormat,
+              "<abc myattr='real'><otherel><abc>foo</abc></otherel>text</abc>") do |sel|
+    assert_equal 'real', sel.myattr
+    assert_equal "<otherel><abc>foo</abc></otherel>text", sel.value
   end
 end

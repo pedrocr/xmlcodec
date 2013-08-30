@@ -27,4 +27,16 @@ class Test::Unit::TestCase
   def compare_xpath(value, path)
 		assert_equal(value.strip, XMLCodec::XMLUtils::select_path(path, @temp_path).strip)
 	end
+
+  # Tests both through DOM and text to make sure both code paths are working
+  def self.double_import_test(name, klass, text,&block)
+    define_method(name.to_s+"_text") do 
+      sel = klass.import_xml text
+      instance_exec(sel,&block)
+    end
+    define_method(name.to_s+"_dom") do 
+      sel = klass.import_xml Nokogiri::XML::Document.parse(text)
+      instance_exec(sel,&block)
+    end
+  end
 end
