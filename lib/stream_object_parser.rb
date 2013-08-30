@@ -70,7 +70,7 @@ module XMLCodec
       @elements = [XMLSOParserElement.new(nil, nil, nil, nil, nil, 0)]
       @id = 0
       @top_element = nil
-      @allvalue = false
+      @allvalue = 0
     end
     
   private
@@ -105,20 +105,21 @@ module XMLCodec
     end
     
     def start_element(name, attrs) #:nodoc:
-      if @allvalue
+      elclass =  get_elclass(name)
+      if @allvalue > 0
         curr_element.get_object.value << XMLUtils.create_open_tag(name,attrs)
+        @allvalue += 1
       else
-        elclass =  get_elclass(name)
         @elements << XMLSOParserElement.new(name, attrs, elclass, 
                                             curr_element, next_id, 
                                             curr_element.depth+1)
         @currel += 1
-        @allvalue = elclass && elclass.allvalue?
+        @allvalue = 1 if elclass && elclass.allvalue?
       end
     end
 
     def characters(text) #:nodoc:
-      if @allvalue
+      if @allvalue > 0
         curr_element.get_object.value << text
       else
         curr_element.add_child(text)
@@ -127,8 +128,10 @@ module XMLCodec
     
     def end_element(name) #:nodoc:
       elclass =  get_elclass(name)
-      if @allvalue and not (elclass and elclass.allvalue?) #We're inside allvalue
-        curr_element.get_object.value << XMLUtils.create_close_tag(name)   
+      if @allvalue > 1
+        # We're closing an allvalue subelement, just output it and pop
+        curr_element.get_object.value << XMLUtils.create_close_tag(name) 
+        @allvalue -= 1  
       else
         obj = curr_element
         
@@ -148,7 +151,7 @@ module XMLCodec
             
         @elements.pop
         @currel -= 1
-        @allvalue = false if elclass and elclass.allvalue?
+        @allvalue = 0
       end
     end
   end

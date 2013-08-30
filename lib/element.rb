@@ -424,7 +424,7 @@ module XMLCodec
       end
     
       if elclass.allvalue?
-        elements = [xmlel.children.map{|c| c.to_s}.join]
+        elements = [xmlel.children.map{|c| c.to_xml(:save_with=>0)}.join]
       else
         elements = []
         xmlel.children.each do |e|
