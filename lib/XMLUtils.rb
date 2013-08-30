@@ -42,6 +42,11 @@ module XMLCodec
       str << ">"
       str
     end
+
+    # Create a close tag.
+    def self.create_close_tag(name)
+      "</"+name.to_s+">"
+    end
     
     # Escape a string so that it can be included in a XML document
     def self.escape_xml(string)

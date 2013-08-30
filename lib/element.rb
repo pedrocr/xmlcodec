@@ -180,10 +180,7 @@ module XMLCodec
     # method called #subelements that will return an instance of XMLSubElements
     def self.xmlsubelements #:doc:
       define_method(:subelements) {
-        if not self.instance_variables.index("@subelements".to_sym)
-          @subelements = XMLSubElements.new(self)
-        end
-        @subelements
+        @subelements ||= XMLSubElements.new(self)
       }
       define_method('<<') {|value|
         subelements << value
@@ -197,7 +194,9 @@ module XMLCodec
       define_method(:find_all_named) {|name|
         subelements.find_all_named(name)
       }
-      define_method(:has_subelements?) {true}
+      self.class_eval do
+        def self.has_subelements?; true; end
+      end
     end
   
     # Add a xmlattr type attribute (wrapper around attr_accessor)
@@ -209,16 +208,16 @@ module XMLCodec
     # Defines a new xml format (like XHTML or DocBook). This should be used in 
     # a class that's the super class of all the elements of a format
     def self.xmlformat(name=nil)
-      class_variable_set('@@elclasses', {})
-      class_variable_set('@@strict_parsing', false)
+      class_variable_set(:@@elclasses, {})
+      class_variable_set(:@@strict_parsing, false)
     end
 
     def self.xml_strict_parsing
-      class_variable_set('@@strict_parsing', true)
+      class_variable_set(:@@strict_parsing, true)
     end
     
     def self.elclasses
-      class_variable_get('@@elclasses')
+      class_variable_get(:@@elclasses)
     end
     
     # Sets the element name for the element
@@ -244,13 +243,28 @@ module XMLCodec
     # that takes a value as argument and an accessor named #value. This should
     # be used for elements that contain only text and no subelements
     def self.elwithvalue
-      define_method(:hasvalue?){true}
+      self.class_eval do
+        def self.hasvalue?; true; end
+      end
       self.class_eval do
         def initialize(value=nil)
           @value = value
         end
       end
       attr_accessor :value
+    end
+
+    # Set the element as having a value that eats up any subelements as if they
+    # were text. The element will behave similarly to "elwithvalue" with an 
+    # initializar that takes a value as argument and an accessor named #value
+    # and will consume all its subelements as if they were text. This should
+    # be used for elements that contain subelements that you want to treat as
+    # text like <content> in Atom
+    def self.elallvalue
+      self.elwithvalue
+      self.class_eval do
+        def self.allvalue?; true; end
+      end
     end
   
     # Creates the XML subelements
@@ -337,7 +351,7 @@ module XMLCodec
     # Gets the class for a certain element name.
     def self.get_element_class(name)
       cl = elclasses[name.to_sym]
-  	  if not cl and class_variable_get('@@strict_parsing')
+  	  if not cl and class_variable_get(:@@strict_parsing)
   		  raise ElementClassNotFound, "No class defined for element type: '" + name.to_s + "'"
   		end
   		cl
@@ -350,13 +364,16 @@ module XMLCodec
     
     # Method that checks if a given class has subelements. This is usually only
     # used when exporting stuff.
-    def has_subelements?; false; end
+    def self.has_subelements?; false end
+    def has_subelements?; self.class.has_subelements? end
 
     # tests if the element is a value element as defined by 'elwithvalue'
-    def hasvalue?
-      false
-    end
-  
+    def self.hasvalue?; false end
+    def hasvalue?; self.class.hasvalue? end
+
+    # tests if the element is a value element as defined by 'elallvalue'
+    def self.allvalue?; false end
+    def allvalue?; self.class.allvalue?; end
 
     # Creates the xml for the element inside the parent element. The parent
     # passed should be a Nokogiri XML Node or Document. This call is recursive
@@ -369,7 +386,7 @@ module XMLCodec
       create_xml_attr(xmlel)
       create_xml_subel(xmlel)
       
-      if has_subelements?
+      if self.has_subelements?
         create_xml_subelements(xmlel)
       end
       
@@ -396,19 +413,26 @@ module XMLCodec
       if xmlel.is_a? Nokogiri::XML::Document
         xmlel = xmlel.root
       end
-      
-      elements = []
-      xmlel.children.each do |e|
-        if e.text?
-          elements << e.text
+
+      elclass = get_element_class(xmlel.name)
+      if not elclass
+        if class_variable_get(:@@strict_parsing)
+    		  raise ElementClassNotFound, "No class defined for element type: '#{e.name}'"  
         else
-          elclass = get_element_class(e.name)
-          if not elclass
-            if class_variable_get('@@strict_parsing')
-  		        raise ElementClassNotFound, "No class defined for element type: '#{e.name}'"  
-            end
-  		    else
-            elements << elclass._import_xml_dom(e)
+          return nil
+        end
+      end
+    
+      if elclass.allvalue?
+        elements = [xmlel.children.map{|c| c.to_s}.join]
+      else
+        elements = []
+        xmlel.children.each do |e|
+          if e.text?
+            elements << e.text
+          else
+            element = _import_xml_dom(e)
+            elements << element if element
           end
         end
       end
@@ -418,8 +442,6 @@ module XMLCodec
         attributes[name] = attr.value
       end
       
-      elclass = get_element_class(xmlel.name)
-      return nil if not elclass
       elclass.new_with_content(attributes, elements)
     end
     
@@ -457,7 +479,7 @@ module XMLCodec
     def add_attr(attrs)
       attrs.each do |name, value|
         if not self.class.attr_names.include?(name.to_sym)
-          if self.class.class_variable_get('@@strict_parsing')
+          if self.class.class_variable_get(:@@strict_parsing)
             raise ElementAttributeNotFound, "No attribute '#{name}' defined for class '#{self.class}'" 
           end
         else
@@ -468,7 +490,7 @@ module XMLCodec
     
     # add the text elements into the element
     def add_texts(texts)
-      if hasvalue?
+      if self.hasvalue?
         @value = texts.join
       end
     end

@@ -1,17 +1,17 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
 require 'nokogiri'
 
-class PartialBaseFormat < XMLElement
-  xmlformat 'Base Format'
-end
-
-class PartialSimpleElement < PartialBaseFormat
-  elwithvalue
-  elname 'abc'
-  xmlattr :myattr
-end
-
 class TestPartialImport < Test::Unit::TestCase
+  class PartialBaseFormat < XMLElement
+    xmlformat 'Base Format'
+  end
+
+  class PartialSimpleElement < PartialBaseFormat
+    elwithvalue
+    elname 'abc'
+    xmlattr :myattr
+  end
+
   def test_partial_elements_in_text
     sel = PartialBaseFormat.import_xml "<abc><otherel></otherel>text</abc>"
     assert_equal "text", sel.value

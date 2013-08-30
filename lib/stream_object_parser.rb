@@ -70,6 +70,7 @@ module XMLCodec
       @elements = [XMLSOParserElement.new(nil, nil, nil, nil, nil, 0)]
       @id = 0
       @top_element = nil
+      @allvalue = false
     end
     
   private
@@ -104,35 +105,51 @@ module XMLCodec
     end
     
     def start_element(name, attrs) #:nodoc:
-      @elements << XMLSOParserElement.new(name, attrs, get_elclass(name), 
-                                          curr_element, next_id, 
-                                          curr_element.depth+1)
-      @currel += 1
+      if @allvalue
+        curr_element.get_object.value << XMLUtils.create_open_tag(name,attrs)
+      else
+        elclass =  get_elclass(name)
+        @elements << XMLSOParserElement.new(name, attrs, elclass, 
+                                            curr_element, next_id, 
+                                            curr_element.depth+1)
+        @currel += 1
+        @allvalue = elclass && elclass.allvalue?
+      end
     end
 
     def characters(text) #:nodoc:
-      curr_element.add_child(text)
+      if @allvalue
+        curr_element.get_object.value << text
+      else
+        curr_element.add_child(text)
+      end
     end
     
     def end_element(name) #:nodoc:
-      obj = curr_element
-      
-      if @listener.respond_to?("el_"+name)
-        @listener.send("el_"+name, obj)
-      end
-      
-      if not obj.consumed
-        real_obj = obj.get_object
-
-        if prev_element && real_obj
-          prev_element.add_child(real_obj)
+      elclass =  get_elclass(name)
+      if @allvalue and not (elclass and elclass.allvalue?) #We're inside allvalue
+        curr_element.get_object.value << XMLUtils.create_close_tag(name)   
+      else
+        obj = curr_element
+        
+        if @listener.respond_to?("el_"+name)
+          @listener.send("el_"+name, obj)
         end
         
-        @top_element = obj
-      end
+        if not obj.consumed
+          real_obj = obj.get_object
+
+          if prev_element && real_obj
+            prev_element.add_child(real_obj)
+          end
           
-      @elements.pop
-      @currel -= 1
+          @top_element = obj
+        end
+            
+        @elements.pop
+        @currel -= 1
+        @allvalue = false if elclass and elclass.allvalue?
+      end
     end
   end
 end
