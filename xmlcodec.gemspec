@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
 
   s.name              = 'xmlcodec'
-  s.version           = '0.2.0'
-  s.date              = '2011-03-30'
+  s.version           = '0.3.0'
+  s.date              = '2013-08-30'
 
   s.summary     = "Generic Importer/Exporter of XML formats"
   s.description = <<EOF
@@ -42,6 +42,7 @@ EOF
     test/element_test.rb
     test/multi_format_test.rb
     test/partial_export_test.rb
+    test/partial_import_test.rb
     test/simple_objects.rb
     test/stream_object_parser_test.rb
     test/stream_parser_test.rb
