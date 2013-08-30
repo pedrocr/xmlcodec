@@ -376,10 +376,23 @@ module XMLCodec
       xmlel
     end
     
+    # Import the XML into an object from a Nokogiri XML Node or Document or from
+    # a string.
+    def self.import_xml(obj)
+      if obj.instance_of? String
+        _import_xml_text(obj)
+      elsif obj.instance_of? Nokogiri::XML::Node or 
+            obj.instance_of? Nokogiri::XML::Document
+        _import_xml_dom(obj)
+      else
+        nil
+      end
+    end
+
     # Import the XML into an object from a Nokogiri XML Node or Document. 
     # This call is recursive and imports any subelements found into the 
     # corresponding objects.
-    def self.import_xml(xmlel)
+    def self._import_xml_dom(xmlel)
       if xmlel.is_a? Nokogiri::XML::Document
         xmlel = xmlel.root
       end
@@ -390,7 +403,13 @@ module XMLCodec
           elements << e.text
         else
           elclass = get_element_class(e.name)
-          elements << elclass.import_xml(e)
+          if not elclass
+            if class_variable_get('@@strict_parsing')
+  		        raise ElementClassNotFound, "No class defined for element type: '#{e.name}'"  
+            end
+  		    else
+            elements << elclass._import_xml_dom(e)
+          end
         end
       end
       
@@ -399,11 +418,13 @@ module XMLCodec
         attributes[name] = attr.value
       end
       
-      new_with_content(attributes, elements)
+      elclass = get_element_class(xmlel.name)
+      return nil if not elclass
+      elclass.new_with_content(attributes, elements)
     end
     
     # Import the XML directly from the text.
-    def self.import_xml_text(text)
+    def self._import_xml_text(text)
       parser = XMLStreamObjectParser.new(self)
       parser.parse(text)
       parser.top_element
