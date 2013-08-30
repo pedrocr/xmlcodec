@@ -73,21 +73,21 @@ format.
 To import XML just do:
 
   # From text
-  Root.import_xml_text(File.new('file.xml'))
+  Root.import_xml File.new('file.xml')
   
-  # From a REXML DOM
-  Root.import_xml(REXML::Document.new(File.new('file.xml')))
+  # From a Nokogiri DOM
+  Root.import_xml Nokogiri::XML::Document.parse(File.read('file.xml'))
   
 To export do:
 
   # To generate XML text
   string = some_element.xml_text
 
-  # To generate REXML DOM
-  doc = some_element.create_xml(REXML::Document.new)
+  # To generate Nokogiri DOM
+  doc = some_element.create_xml(Nokogiri::XML::Document.new)
   
 All these calls require keeping the whole contents of the document in memory.
-The ones that use the REXML DOM will have it twice. To handle large documents with constant memory usage another set of APIs is available.
+The ones that use the Nokogiri DOM will have it twice. To handle large documents with constant memory usage another set of APIs is available.
 
 To stream parse a large document you'd do something like:
 
