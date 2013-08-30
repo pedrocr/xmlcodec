@@ -173,7 +173,7 @@ module XMLCodec
     
     # returns a string with the closing tag for the element
     def create_close_tag
-      "</"+elname.to_s+">"
+      XMLCodec::XMLUtils::create_close_tag(elname.to_s)
     end
   
     # Declare the class as having many subelements. Instances will have a 
