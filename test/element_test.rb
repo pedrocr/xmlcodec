@@ -240,7 +240,7 @@ class TestXMLElement < Test::Unit::TestCase
     assert_equal SimpleElement, BaseFormat.get_element_class('abc')
     assert_equal SimpleElement, BaseFormat.get_element_class(:abc)
     assert_raise ElementClassNotFound do 
-      BaseFormat.get_element_class(:nosuchclass)
+      StrictBaseFormat.get_element_class(:nosuchclass)
     end
   end
   

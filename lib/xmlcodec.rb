@@ -1,7 +1,7 @@
 require 'nokogiri'
 
 module XMLCodec
-    VERSION = '0.2.0'
+    VERSION = '0.3.0'
 end
 
 require File.dirname(__FILE__) + '/XMLUtils'

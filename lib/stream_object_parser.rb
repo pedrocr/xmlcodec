@@ -32,6 +32,7 @@ module XMLCodec
     # passed to the constructor. This is cached so the object will only be 
     # created once. All subsequent calls will return the same object.
     def get_object
+      return nil if not @elclass
       if not @object
         @object = @elclass.new_with_content(@attrs, @children)
         if @parent
@@ -121,8 +122,10 @@ module XMLCodec
       end
       
       if not obj.consumed
-        if prev_element
-          prev_element.add_child(obj.get_object)
+        real_obj = obj.get_object
+
+        if prev_element && real_obj
+          prev_element.add_child(real_obj)
         end
         
         @top_element = obj

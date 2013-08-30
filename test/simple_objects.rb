@@ -1,5 +1,10 @@
 include XMLCodec
 
+class StrictBaseFormat < XMLElement
+  xmlformat 'Base Format'
+  xml_strict_parsing
+end
+
 class BaseFormat < XMLElement
   xmlformat 'Base Format'
 end

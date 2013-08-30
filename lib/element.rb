@@ -2,6 +2,9 @@ module XMLCodec
   class ElementClassNotFound < RuntimeError
   end
 
+  class ElementAttributeNotFound < RuntimeError
+  end
+
   # This class should be inherited from to create classes that are able to
   # import and export XML elements and their children. It provides three main
   # functions: xmlattr, xmlsubel and xmlsubel_mult.
@@ -45,7 +48,7 @@ module XMLCodec
     def self.xmlattrs
       @xmlattrs ||=[]
     end
-  
+
     # Add a name as being a subelement (mult or single)
     def self._xmlsubel(name)
       self.xmlsubels << name
@@ -127,6 +130,10 @@ module XMLCodec
   
     # Iterates over the object's XML atributes
     def self.each_attr    
+      attr_names.each {|name| yield name}
+    end
+
+    def self.attr_names
       if not self.instance_variables.index("@__attr_names".to_sym)
         names = []
         # Iterate all the superclasses that are still children of XMLElement
@@ -139,7 +146,7 @@ module XMLCodec
         @__attr_names = names
       end
       
-      @__attr_names.each {|name| yield name}
+      @__attr_names
     end
 
     # Creates the XML for the atributes
@@ -203,6 +210,11 @@ module XMLCodec
     # a class that's the super class of all the elements of a format
     def self.xmlformat(name=nil)
       class_variable_set('@@elclasses', {})
+      class_variable_set('@@strict_parsing', false)
+    end
+
+    def self.xml_strict_parsing
+      class_variable_set('@@strict_parsing', true)
     end
     
     def self.elclasses
@@ -325,7 +337,7 @@ module XMLCodec
     # Gets the class for a certain element name.
     def self.get_element_class(name)
       cl = elclasses[name.to_sym]
-  	  if not cl
+  	  if not cl and class_variable_get('@@strict_parsing')
   		  raise ElementClassNotFound, "No class defined for element type: '" + name.to_s + "'"
   		end
   		cl
@@ -423,7 +435,13 @@ module XMLCodec
     # add the attributes passed as a hash to the element
     def add_attr(attrs)
       attrs.each do |name, value|
-        self.send("#{name}=", value)
+        if not self.class.attr_names.include?(name.to_sym)
+          if self.class.class_variable_get('@@strict_parsing')
+            raise ElementAttributeNotFound, "No attribute '#{name}' defined for class '#{self.class}'" 
+          end
+        else
+          self.send("#{name}=", value)
+        end
       end
     end
     
