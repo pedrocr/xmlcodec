@@ -3,9 +3,8 @@
 require 'rubygems'
 require 'rake'
 require 'date'
-require 'rcov/rcovtask'
 require 'rake/testtask'
-require 'rake/rdoctask'
+require 'rdoc/task'
 
 #############################################################################
 #
@@ -54,14 +53,6 @@ Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
   test.pattern = 'test/*_test.rb'
   test.verbose = true
-end
-
-Rcov::RcovTask.new(:coverage) do |t|
-  t.libs << "test"
-  t.test_files = FileList['test/*_test.rb']
-  t.rcov_opts << ['--exclude "^/"', '--include "lib/.*\.rb"']
-  t.output_dir = 'coverage'
-  t.verbose = true
 end
 
 Rake::RDocTask.new do |rdoc|
