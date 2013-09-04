@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
 
   s.name              = 'xmlcodec'
-  s.version           = '0.3.1'
-  s.date              = '2013-08-30'
+  s.version           = '0.3.2'
+  s.date              = '2013-09-04'
 
   s.summary     = "Generic Importer/Exporter of XML formats"
   s.description = <<EOF
@@ -17,6 +17,7 @@ EOF
   s.authors  = ["Pedro Côrte-Real"]
   s.email    = 'pedro@pedrocr.net'
   s.homepage = 'https://github.com/pedrocr/xmlcodec'
+  s.license = 'LGPL-2.1'
 
   s.require_paths = %w[lib]
 
@@ -35,6 +36,14 @@ EOF
     Rakefile
     lib/XMLUtils.rb
     lib/element.rb
+    lib/element_attrs.rb
+    lib/element_creation.rb
+    lib/element_export.rb
+    lib/element_import.rb
+    lib/element_partial_export.rb
+    lib/element_subel.rb
+    lib/element_subelements.rb
+    lib/element_value.rb
     lib/stream_object_parser.rb
     lib/stream_parser.rb
     lib/subelements.rb

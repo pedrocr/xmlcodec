@@ -105,13 +105,17 @@ end
 #############################################################################
 
 desc "git tag, build and release gem"
-task :release => :build do
-  unless `git branch` =~ /^\* master$/
-    puts "You must be on the master branch to release!"
-    exit!
+task :release => :build do |t|
+  if not File.exists? "pkg/tag-#{version}"
+    unless `git branch` =~ /^\* master$/
+      puts "You must be on the master branch to release!"
+      exit!
+    end
+    sh "git commit --allow-empty -a -m 'Release #{version}'"
+    sh "git tag v#{version}"
+    sh "touch pkg/tag-#{version}"
   end
-  sh "git commit --allow-empty -a -m 'Release #{version}'"
-  sh "git tag v#{version}"
+
   sh "git push origin master"
   sh "git push origin v#{version}"
   sh "gem push pkg/#{name}-#{version}.gem"
